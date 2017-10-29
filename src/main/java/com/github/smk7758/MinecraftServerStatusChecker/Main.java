@@ -35,7 +35,7 @@ public class Main extends Application {
 		String resposes = "Version: " + response.getVersion().getName() + "\n"
 				+ "OnlinePlayers / MaximumPlayers: " + response.getPlayers().getOnline() + " / " + response.getPlayers().getMax() + "\n"
 				+ "Ping: " + response.getTime() + "\n"
-				+ "isFavicon(Icon):" + is_favicon + "\n"
+				+ "isFavicon(Icon): " + is_favicon + "\n"
 				+ "Description(MOTD): " + response.getDescription().getText();
 //		+ "Favicon(Icon): " + response.getFavicon() + "\n"
 		System.out.println(resposes);

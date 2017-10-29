@@ -27,16 +27,12 @@ public class Controller {
 	@FXML
 	private void onButtonConnect() {
 		String address = textfield_adress.getText();
+		if (!address.isEmpty()) address = "127.0.0.1";
 		String port_s = textfield_port.getText();
-		if (!address.isEmpty()) {
-			if (port_s.isEmpty()) port_s = "25565";
-			short port = Short.parseShort(textfield_port.getText());
-			ConnectThread ct = new ConnectThread(address, port);
-			ct.start();
-		} else {
-			setImageStatus(0);
-			System.err.println("Please write 'adress' and 'port' fields.");
-		}
+		if (port_s.isEmpty()) port_s = "25565";
+		short port = Short.parseShort(port_s);
+		ConnectThread ct = new ConnectThread(address, port);
+		ct.start();
 	}
 
 	private void setImageStatus(int status) {
