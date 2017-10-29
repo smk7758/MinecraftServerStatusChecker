@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 
 public class MCServerStatus implements AutoCloseable {
 	private InetSocketAddress host = null;
-	private int protocol_version = 47;
+	private int protocol_version = -1;
 	private int timeout = 7000;
 	private Socket socket = null;
 	private InputStream is = null;

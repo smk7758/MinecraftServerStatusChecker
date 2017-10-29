@@ -8,8 +8,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-	public static String program_name = "MinecraftServerStatusChecker_0.0.1";
-	public static String fxml_url = "MinecraftServerStatusChecker_0.0.1.fxml";
+	public static String program_name = "MinecraftServerStatusChecker_0.0.2";
+	public static String fxml_url = "MinecraftServerStatusChecker_0.0.2.fxml";
 	public static Stage primary_stage = null;
 
 	public static void main(String[] args) {
@@ -30,9 +30,14 @@ public class Main extends Application {
 	}
 
 	public static void printResponse(ServerStatusResponse response) {
-		String resposes = "Version: " + response.getVersion().getName() + "\n" + "OnlinePlayers / MaximumPlayers: "
-				+ response.getPlayers().getOnline() + " / " + response.getPlayers().getMax() + "\n" + "Ping: "
-				+ response.getTime() + "\n" + "Description(MOTD): " + response.getDescription().getText();
+		String is_favicon = "true";
+		if (response.getFavicon().isEmpty()) is_favicon = "false";
+		String resposes = "Version: " + response.getVersion().getName() + "\n"
+				+ "OnlinePlayers / MaximumPlayers: " + response.getPlayers().getOnline() + " / " + response.getPlayers().getMax() + "\n"
+				+ "Ping: " + response.getTime() + "\n"
+				+ "isFavicon(Icon):" + is_favicon + "\n"
+				+ "Description(MOTD): " + response.getDescription().getText();
+//		+ "Favicon(Icon): " + response.getFavicon() + "\n"
 		System.out.println(resposes);
 	}
 }
