@@ -8,8 +8,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-	public static String program_name = "MinecraftServerStatusChecker_0.0.2";
-	public static String fxml_url = "MinecraftServerStatusChecker_0.0.2.fxml";
+	public static String program_name = "MinecraftServerStatusChecker_0.0.2.2";
+	public static String fxml_url = "MinecraftServerStatusChecker_0.0.2.2.fxml";
 	public static Stage primary_stage = null;
 
 	public static void main(String[] args) {

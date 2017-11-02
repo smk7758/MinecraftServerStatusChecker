@@ -27,7 +27,7 @@ public class Controller {
 	@FXML
 	private void onButtonConnect() {
 		String address = textfield_adress.getText();
-		if (!address.isEmpty()) address = "127.0.0.1";
+		if (address.isEmpty()) address = "127.0.0.1";
 		String port_s = textfield_port.getText();
 		if (port_s.isEmpty()) port_s = "25565";
 		short port = Short.parseShort(port_s);
