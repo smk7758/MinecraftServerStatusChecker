@@ -1,6 +1,7 @@
 package com.github.smk7758.MinecraftServerStatusChecker;
 
-import com.github.smk7758.MinecraftServerStatusChecker.MCServerStatus.ServerStatusResponse;
+import com.github.smk7758.MinecraftServerStatusChecker.Networks.MinecraftServerStatus.ServerStatusResponse;
+import com.github.smk7758.MinecraftServerStatusChecker.Screens.MainController;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,9 +9,11 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-	public static String program_name = "MinecraftServerStatusChecker_0.0.2.2";
-	public static String fxml_url = "MinecraftServerStatusChecker_0.0.2.2.fxml";
+	public static final String program_name = "MinecraftServerStatusChecker_0.0.3";
+	public static final String fxml_url = "Screens/Main.fxml";
 	public static Stage primary_stage = null;
+	private static boolean debug_mode = true; // for Debug.
+	private static MainController mctr = null;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -18,7 +21,9 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primary_stage) throws Exception {
-		Scene scene = new Scene(FXMLLoader.load(getClass().getResource(fxml_url)));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml_url));
+		Scene scene = new Scene(loader.load());
+		mctr = (MainController) loader.getController();
 		// Set Title
 		primary_stage.setTitle(program_name);
 		// Set Window
@@ -27,6 +32,11 @@ public class Main extends Application {
 		primary_stage.setScene(scene);
 		primary_stage.show();
 		Main.primary_stage = primary_stage;
+	}
+
+	public static void printDebug(String text) {
+		if (!debug_mode) return;
+		System.out.println(text);
 	}
 
 	public static void printResponse(ServerStatusResponse response) {

@@ -1,4 +1,4 @@
-package com.github.smk7758.MinecraftServerStatusChecker;
+package com.github.smk7758.MinecraftServerStatusChecker.Networks;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -13,7 +13,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
-public class MCServerStatus implements AutoCloseable {
+public class MinecraftServerStatus implements AutoCloseable {
 	private InetSocketAddress host = null;
 	private int protocol_version = -1;
 	private int timeout = 7000;
@@ -28,7 +28,7 @@ public class MCServerStatus implements AutoCloseable {
 	 * @param host the adress and the port of the server you want to access.
 	 * @throws IOException some conection error.
 	 */
-	public MCServerStatus(InetSocketAddress host) throws IOException {
+	public MinecraftServerStatus(InetSocketAddress host) throws IOException {
 		initialize(host, this.timeout, this.protocol_version);
 	}
 
@@ -38,7 +38,7 @@ public class MCServerStatus implements AutoCloseable {
 	 * @param protocol_version each version of Minecraft has the different one.
 	 * @throws IOException some conection error.
 	 */
-	public MCServerStatus(InetSocketAddress host, int timeout, int protocol_version) throws IOException {
+	public MinecraftServerStatus(InetSocketAddress host, int timeout, int protocol_version) throws IOException {
 		this.timeout = timeout;
 		this.protocol_version = protocol_version;
 		initialize(host, timeout, protocol_version);
@@ -50,7 +50,7 @@ public class MCServerStatus implements AutoCloseable {
 	 * @throws IOException some conection error.
 	 * @deprecated Can't get exception properly.
 	 */
-	public MCServerStatus(String address, short port) throws IOException {
+	public MinecraftServerStatus(String address, short port) throws IOException {
 		initialize(address, port, this.timeout, this.protocol_version);
 	}
 
@@ -62,7 +62,7 @@ public class MCServerStatus implements AutoCloseable {
 	 * @throws IOException some conection error.
 	 * @deprecated Can't get exception properly.
 	 */
-	public MCServerStatus(String address, short port, int timeout, int protocol_version) throws IOException {
+	public MinecraftServerStatus(String address, short port, int timeout, int protocol_version) throws IOException {
 		initialize(address, port, timeout, protocol_version);
 	}
 
