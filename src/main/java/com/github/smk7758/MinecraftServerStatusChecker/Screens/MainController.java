@@ -7,7 +7,7 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 
 import com.github.smk7758.MinecraftServerStatusChecker.Main;
-import com.github.smk7758.MinecraftServerStatusChecker.Networks.ServerListItemConnect;
+import com.github.smk7758.MinecraftServerStatusChecker.Networks.ServerListItemConnectThread;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,7 +20,7 @@ import javafx.scene.layout.Pane;
 public class MainController {
 	private boolean check_host_faster = false;
 	private Pane pane_children = new Pane();
-	private HashMap<Pane, ServerListItemConnect> serverlist_items = new HashMap<>();
+	private HashMap<Pane, ServerListItemConnectThread> serverlist_items = new HashMap<>();
 	@FXML
 	private Button button_add_list, button_connect;
 	@FXML
@@ -55,7 +55,7 @@ public class MainController {
 		}
 		slictr = sli_fxml.getController();
 
-		ServerListItemConnect sli = null;
+		ServerListItemConnectThread sli = null;
 		if (check_host_faster) {
 			InetSocketAddress host = null;
 			try {
@@ -65,9 +65,9 @@ public class MainController {
 				System.err.println("Port parameter is outside the specifid range of valid port values.");
 				return;
 			}
-			sli = new ServerListItemConnect(slictr, textfield_server_name.getText(), host);
+			sli = new ServerListItemConnectThread(slictr, textfield_server_name.getText(), host);
 		} else {
-			sli = new ServerListItemConnect(slictr, textfield_server_name.getText(), address, port);
+			sli = new ServerListItemConnectThread(slictr, textfield_server_name.getText(), address, port);
 		}
 
 		serverlist_items.put(pane, sli);
@@ -87,10 +87,10 @@ public class MainController {
 	private void onButtonConnect() {
 		for (Node pane : pane_children.getChildren()) {
 			if (pane instanceof Pane) {
-				ServerListItemConnect sli = serverlist_items.get((Pane)pane);
+				ServerListItemConnectThread sli = serverlist_items.get((Pane)pane);
 				assertNotNull(sli);
 				Main.printDebug("connect?");
-				sli.startConnection();
+				sli.start();//破棄される。
 			}
 		}
 	}

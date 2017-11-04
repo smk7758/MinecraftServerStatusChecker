@@ -7,15 +7,15 @@ import com.github.smk7758.MinecraftServerStatusChecker.Main;
 import com.github.smk7758.MinecraftServerStatusChecker.Networks.MinecraftServerStatus.ServerStatusResponse;
 import com.github.smk7758.MinecraftServerStatusChecker.Screens.ServerListItemController;
 
-public class ServerListItemConnect {
-	protected ServerListItemController slictr = null;
+public class ServerListItemConnectThread extends Thread {
+	private ServerListItemController slictr = null;
 	private InetSocketAddress host = null;
 
-	public ServerListItemConnect(ServerListItemController slictr, String server_name, InetSocketAddress host) {
+	public ServerListItemConnectThread(ServerListItemController slictr, String server_name, InetSocketAddress host) {
 		initialize(slictr, server_name, host);
 	}
 
-	public ServerListItemConnect(ServerListItemController slictr, String server_name, String address,
+	public ServerListItemConnectThread(ServerListItemController slictr, String server_name, String address,
 			short port) {
 		try {
 			this.host = new InetSocketAddress(address, port);
@@ -33,21 +33,22 @@ public class ServerListItemConnect {
 		this.host = host;
 	}
 
-	public void startConnection() {
+	@Override
+	public void run() {
 		slictr.setImageStatus(1);
-		ResponseServerStatusThread rss = new ResponseServerStatusThread(host);
-		rss.start();
+		ResponseServerStatus rss = new ResponseServerStatus(host);
+		rss.getResponse();
+		slictr.setImageStatus(2);
 	}
 
-	private class ResponseServerStatusThread extends Thread {
+	private class ResponseServerStatus {
 		private InetSocketAddress host = null;
 
-		public ResponseServerStatusThread(InetSocketAddress host) {
+		public ResponseServerStatus(InetSocketAddress host) {
 			this.host = host;
 		}
 
-		@Override
-		public void run() {
+		public ServerStatusResponse getResponse() {
 			ServerStatusResponse response = null;
 			try (MinecraftServerStatus mcss = new MinecraftServerStatus(host);) {
 				mcss.sendHandshakePacket();
@@ -56,14 +57,12 @@ public class ServerListItemConnect {
 				mcss.sendPingPacket();
 				int ping_time = (int) mcss.recievePing();
 				response.setTime(ping_time);
-				slictr.setItems(response);
 				Main.printResponse(response);
-				slictr.setImageStatus(2);
 			} catch (IOException ex) {
 				ex.printStackTrace();
-				slictr.setImageStatus(0);
-				return;
+				return null;
 			}
+			return response;
 		}
 	}
 }
