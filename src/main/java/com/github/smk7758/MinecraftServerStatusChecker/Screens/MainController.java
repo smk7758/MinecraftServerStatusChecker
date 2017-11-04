@@ -1,20 +1,25 @@
 package com.github.smk7758.MinecraftServerStatusChecker.Screens;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.HashMap;
 
 import com.github.smk7758.MinecraftServerStatusChecker.Main;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 
 public class MainController {
-	private ServerListItemController sli_ctr = null;
+	private boolean check_host_faster = false;
 	private Pane pane_children = new Pane();
+	private HashMap<Pane, ServerListItemController> serverlist_items = new HashMap<>();
 	@FXML
 	private Button button_add_list, button_connect;
 	@FXML
@@ -26,26 +31,20 @@ public class MainController {
 	private void onButtonAddServer() {
 		// check field
 		String address, port_s;
-		InetSocketAddress host = null;
+		short port = 25565;
 		address = textfield_adress.getText();
 		if (address.isEmpty()) address = "127.0.0.1";
 		port_s = textfield_port.getText();
 		if (port_s.isEmpty()) port_s = "25565";
 		try {
-			short port = Short.parseShort(port_s);
+			port = Short.parseShort(port_s);
 		} catch (NumberFormatException ex) {
 			Main.printDebug("Port field is not a number.");
 			System.err.println("Port field is not a number.");
 		}
-//		try {
-//			host = new InetSocketAddress(address, port);
-//		} catch (IllegalArgumentException ex) {
-//			Main.printDebug("Port parameter is outside the specifid range of valid port values.");
-//			System.err.println("Port parameter is outside the specifid range of valid port values.");
-//			return;
-//		}
 
 		// add Pane of ServerList
+		ServerListItemController slictr = null;
 		FXMLLoader sli_fxml = new FXMLLoader(getClass().getResource("ServerListItem.fxml"));
 		Pane pane = null;
 		try {
@@ -53,8 +52,23 @@ public class MainController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		sli_ctr = sli_fxml.getController();
-		sli_ctr.setInitializeItems(textfield_server_name.getText(), address, port_s);
+		slictr = sli_fxml.getController();
+
+		if (check_host_faster) {
+			InetSocketAddress host = null;
+			try {
+				host = new InetSocketAddress(address, port);
+			} catch (IllegalArgumentException ex) {
+				Main.printDebug("Port parameter is outside the specifid range of valid port values.");
+				System.err.println("Port parameter is outside the specifid range of valid port values.");
+				return;
+			}
+			slictr.setInitializeItems(textfield_server_name.getText(), host);
+		} else {
+			slictr.setInitializeItems(textfield_server_name.getText(), address, port);
+		}
+
+		serverlist_items.put(pane, slictr);
 		// host→?
 		pane.setLayoutY(pane_children.getChildren().size() * 120);
 		pane_children.getChildren().add(pane);
@@ -63,19 +77,20 @@ public class MainController {
 
 	// private void onButtonUpItem() {
 	// }
-	//
+
 	// private void onButtonDownItem() {
 	// }
 
 	@FXML
 	private void onButtonConnect() {
-		// for (Node p : pane_serverlist_children.getChildren()) {
-		// if (p instanceof Pane) {
-		// Main.printDebug("Pane");
-		// }
-		// }
-
-		// ConnectThread ct = new ConnectThread(address, port);
-		// ct.start();
+		for (Node p : pane_children.getChildren()) {
+			if (p instanceof Pane) {
+				Main.printDebug("connect?");
+				Pane pane = (Pane) p;
+				ServerListItemController slictr = serverlist_items.get(pane);
+				assertNotNull(slictr);
+				slictr.startConnect();
+			}
+		}
 	}
 }
