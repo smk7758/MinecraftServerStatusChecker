@@ -10,6 +10,8 @@ import com.github.smk7758.MinecraftServerStatusChecker.Screens.ServerListItemCon
 public class ServerListItemConnectThread extends Thread {
 	private ServerListItemController slictr = null;
 	private InetSocketAddress host = null;
+	private String server_name = "";
+	private boolean already_run = false;
 
 	public ServerListItemConnectThread(ServerListItemController slictr, String server_name, InetSocketAddress host) {
 		initialize(slictr, server_name, host);
@@ -28,17 +30,34 @@ public class ServerListItemConnectThread extends Thread {
 	}
 
 	private void initialize(ServerListItemController slictr, String server_name, InetSocketAddress host) {
-		slictr.setInitializeItems(server_name, host.getHostName(), String.valueOf(host.getPort()));
+		// similar as new SliCtr
+		// slictr.setInitializeItems(server_name, host.getHostName(), String.valueOf(host.getPort()));
+		this.setDaemon(true);
 		this.slictr = slictr;
+		this.server_name = server_name;
 		this.host = host;
+	}
+
+	public ServerListItemConnectThread refresh() {
+		return new ServerListItemConnectThread(slictr, server_name, host);
+	}
+
+	public boolean isAlreadRun() {
+		return already_run;
 	}
 
 	@Override
 	public void run() {
+		already_run = true;
 		slictr.setImageStatus(1);
 		ResponseServerStatus rss = new ResponseServerStatus(host);
-		rss.getResponse();
-		slictr.setImageStatus(2);
+		ServerStatusResponse response = rss.getResponse();
+		if (response != null) {
+			slictr.setItems(response);
+			slictr.setImageStatus(2);
+		} else {
+			slictr.setImageStatus(0);
+		}
 	}
 
 	private class ResponseServerStatus {

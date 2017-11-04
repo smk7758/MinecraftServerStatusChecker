@@ -1,7 +1,5 @@
 package com.github.smk7758.MinecraftServerStatusChecker.Screens;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -31,8 +29,9 @@ public class MainController {
 	@FXML
 	private void onButtonAddServer() {
 		// check field
-		String address, port_s;
+		String server_name, address, port_s;
 		short port = 25565;
+		server_name = textfield_server_name.getText();
 		address = textfield_adress.getText();
 		if (address.isEmpty()) address = "127.0.0.1";
 		port_s = textfield_port.getText();
@@ -65,11 +64,10 @@ public class MainController {
 				System.err.println("Port parameter is outside the specifid range of valid port values.");
 				return;
 			}
-			sli = new ServerListItemConnectThread(slictr, textfield_server_name.getText(), host);
+			sli = new ServerListItemConnectThread(slictr, server_name, host);
 		} else {
-			sli = new ServerListItemConnectThread(slictr, textfield_server_name.getText(), address, port);
+			sli = new ServerListItemConnectThread(slictr, server_name, address, port);
 		}
-
 		serverlist_items.put(pane, sli);
 		// host→?
 		pane.setLayoutY(pane_children.getChildren().size() * 120);
@@ -87,10 +85,11 @@ public class MainController {
 	private void onButtonConnect() {
 		for (Node pane : pane_children.getChildren()) {
 			if (pane instanceof Pane) {
-				ServerListItemConnectThread sli = serverlist_items.get((Pane)pane);
-				assertNotNull(sli);
+				ServerListItemConnectThread sli = serverlist_items.get((Pane) pane).isAlreadRun()
+						? serverlist_items.get((Pane) pane).refresh() // alread run
+						: serverlist_items.get((Pane) pane); // not once run
 				Main.printDebug("connect?");
-				sli.start();//破棄される。
+				sli.start();
 			}
 		}
 	}
