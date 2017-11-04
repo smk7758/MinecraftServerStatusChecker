@@ -2,7 +2,6 @@ package com.github.smk7758.MinecraftServerStatusChecker.Screens;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.net.InetSocketAddress;
 
 import com.github.smk7758.MinecraftServerStatusChecker.Main;
 import com.github.smk7758.MinecraftServerStatusChecker.Networks.MinecraftServerStatus.ServerStatusResponse;
@@ -12,16 +11,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 
+/**
+ * Only to manage screen.
+ */
 public class ServerListItemController {
-	public String adress = "127.0.0.1";
-	public short port = 25565;
-	private InetSocketAddress host = null;
 	@FXML
-	private Text text_server_name, text_players, text_ping, text_protocol_version, text_description, text_version,
+	public Text text_server_name, text_players, text_ping, text_protocol_version, text_description, text_version,
 			text_adress, text_port;
 	@FXML
 	private ImageView imageview_server_icon, imageview_status;
-	// ServerListItem sli = null;
 
 	@FXML
 	private void onServerListItemClicked() {
@@ -34,7 +32,7 @@ public class ServerListItemController {
 		text_port.setText(port);
 	}
 
-	private void setImageStatus(int status) {
+	public void setImageStatus(int status) {
 		String icon_name = null;
 		switch (status) {
 			case 0:
@@ -53,24 +51,20 @@ public class ServerListItemController {
 		imageview_status.setImage(image);
 	}
 
-	public String[] getItems(ServerStatusResponse response) {
-		String[] items = new String[10];
-		items[0] = response.getDescription().getText();
-		items[1] = String.valueOf(response.getPlayers().getOnline());
-		items[2] = String.valueOf(response.getPlayers().getMax());
-		items[3] = response.getVersion().getName();
-		items[4] = response.getVersion().getProtocol();
-		items[5] = response.getFavicon();
-		return items;
-	}
-
-	public void setItems(String text_motd_s, String text_online_players_s, String text_max_players_s,
-			String text_version_s, String text_protocol_version_s, String favicon) {
+	public void setItems(ServerStatusResponse response) {
+		String text_motd_s, text_online_players_s, text_max_players_s, text_version_s, text_protocol_version_s,
+				favicon_s;
+		text_motd_s = response.getDescription().getText();
+		text_online_players_s = String.valueOf(response.getPlayers().getOnline());
+		text_max_players_s = String.valueOf(response.getPlayers().getMax());
+		text_version_s = response.getVersion().getName();
+		text_protocol_version_s = response.getVersion().getProtocol();
+		favicon_s = response.getFavicon();
 		text_description.setText(text_motd_s);
 		text_players.setText(text_online_players_s + " / " + text_max_players_s);
 		text_version.setText(text_version_s);
 		text_protocol_version.setText(text_protocol_version_s);
-		if (!favicon.isEmpty()) imageview_server_icon.setImage(new Image(getFaviconAsInputStream(favicon)));
+		if (favicon_s != null && !favicon_s.isEmpty()) imageview_server_icon.setImage(new Image(getFaviconAsInputStream(favicon_s)));
 	}
 
 	public InputStream getFaviconAsInputStream(String favicon) {
@@ -79,14 +73,4 @@ public class ServerListItemController {
 		byte[] image_byte = javax.xml.bind.DatatypeConverter.parseBase64Binary(favicon);
 		return new ByteArrayInputStream(image_byte);
 	}
-
-//	public void startConnect() {
-//		ResponseServerStatusThread rsst = new ResponseServerStatusThread(host);
-//		rsst.start();
-//		rsst.join();
-//		rsst.getResponse();
-//		String[] items = getItems(response);
-//		setItems(items[0], items[1], items[2], items[3], items[4], items[5]); // クソース感
-//		setImageStatus(2);
-//	}
 }
