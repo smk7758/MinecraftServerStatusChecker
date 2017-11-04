@@ -73,13 +73,18 @@ public class MainController {
 		pane.setLayoutY(pane_children.getChildren().size() * 120);
 		pane_children.getChildren().add(pane);
 		pane_serverlist.setContent(pane_children);
+
+		//refresh
+		textfield_server_name.setText("");
+		textfield_adress.setText("");
+		textfield_port.setText("");
 	}
 
-	// private void onButtonUpItem() {
-	// }
+	private void onButtonUpItem() {
+	}
 
-	// private void onButtonDownItem() {
-	// }
+	private void onButtonDownItem() {
+	}
 
 	@FXML
 	private void onButtonConnect() {

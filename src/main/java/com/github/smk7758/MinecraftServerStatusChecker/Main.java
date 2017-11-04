@@ -12,7 +12,6 @@ public class Main extends Application {
 	public static final String fxml_url = "Screens/Main.fxml";
 	public static Stage primary_stage = null;
 	private static boolean debug_mode = true; // for Debug.
-//	private static MainController mctr = null;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -22,7 +21,6 @@ public class Main extends Application {
 	public void start(Stage primary_stage) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml_url));
 		Scene scene = new Scene(loader.load());
-//		mctr = (MainController) loader.getController();
 		// Set Title
 		primary_stage.setTitle(program_name);
 		// Set Window
@@ -38,6 +36,11 @@ public class Main extends Application {
 		System.out.println(text);
 	}
 
+	public static void printResponse(String server_name, ServerStatusResponse response) {
+		System.out.println("ServerName: " + server_name);
+		printResponse(response);
+	}
+
 	public static void printResponse(ServerStatusResponse response) {
 		String is_favicon = "true";
 		if (response.getFavicon() == null || response.getFavicon().isEmpty()) is_favicon = "false";
@@ -46,7 +49,6 @@ public class Main extends Application {
 				+ "Ping: " + response.getTime() + "\n"
 				+ "isFavicon(Icon): " + is_favicon + "\n"
 				+ "Description(MOTD): " + response.getDescription().getText();
-//		+ "Favicon(Icon): " + response.getFavicon() + "\n"
 		System.out.println(resposes);
 	}
 }

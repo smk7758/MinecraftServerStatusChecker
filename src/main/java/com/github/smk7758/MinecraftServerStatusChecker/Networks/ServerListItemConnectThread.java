@@ -30,8 +30,8 @@ public class ServerListItemConnectThread extends Thread {
 	}
 
 	private void initialize(ServerListItemController slictr, String server_name, InetSocketAddress host) {
-		// similar as new SliCtr
-		// slictr.setInitializeItems(server_name, host.getHostName(), String.valueOf(host.getPort()));
+		//similer as new SliCtr
+		slictr.setInitializeItems(server_name, host.getHostName(), String.valueOf(host.getPort()));
 		this.setDaemon(true);
 		this.slictr = slictr;
 		this.server_name = server_name;
@@ -76,7 +76,7 @@ public class ServerListItemConnectThread extends Thread {
 				mcss.sendPingPacket();
 				int ping_time = (int) mcss.recievePing();
 				response.setTime(ping_time);
-				Main.printResponse(response);
+				Main.printResponse(server_name, response);
 			} catch (IOException ex) {
 				ex.printStackTrace();
 				return null;
