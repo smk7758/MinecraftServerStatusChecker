@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#onServerListItemClicked" prefHeight="120.0" prefWidth="590.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.smk7758.MinecraftServerStatusChecker.Screens.ServerListItemController">
+  <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="0.0" />
+      <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="0.0" prefWidth="10.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints />
+      <ColumnConstraints />
+  </columnConstraints>
+  <rowConstraints>
+      <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" percentHeight="20.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" percentHeight="20.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" percentHeight="20.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" percentHeight="20.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <Text fx:id="text_server_name" strokeType="OUTSIDE" strokeWidth="0.0" text="Minecraft Server!" wrappingWidth="202.728515625" GridPane.columnIndex="1" />
+      <Text fx:id="text_players" strokeType="OUTSIDE" strokeWidth="0.0" text="xx / xx" GridPane.columnIndex="3" />
+      <Text fx:id="text_ping" strokeType="OUTSIDE" strokeWidth="0.0" text="ping" GridPane.columnIndex="5" GridPane.columnSpan="3" />
+      <Text fx:id="text_protocol_version" strokeType="OUTSIDE" strokeWidth="0.0" text="protocol version" GridPane.columnIndex="6" />
+      <Text fx:id="text_description" strokeType="OUTSIDE" strokeWidth="0.0" text="The Minecraft Server" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+      <Text fx:id="text_version" strokeType="OUTSIDE" strokeWidth="0.0" text="version" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+<Text fx:id="text_adress" strokeType="OUTSIDE" strokeWidth="0.0" text="minecraft.net" wrappingWidth="321.556640625" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="4" />
+      <ImageView fx:id="imageview_server_icon" fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <ImageView fx:id="imageview_status" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="7" />
+      <Text fx:id="text_port" strokeType="OUTSIDE" strokeWidth="0.0" text="25565" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+   </children>
+</GridPane>
