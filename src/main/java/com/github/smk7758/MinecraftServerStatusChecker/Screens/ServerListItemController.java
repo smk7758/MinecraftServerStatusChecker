@@ -53,18 +53,35 @@ public class ServerListItemController {
 
 	public void setItems(ServerStatusResponse response) {
 		String text_motd_s, text_online_players_s, text_max_players_s, text_version_s, text_protocol_version_s,
-				favicon_s;
+				text_ping_s, favicon_s;
 		text_motd_s = response.getDescription().getText();
 		text_online_players_s = String.valueOf(response.getPlayers().getOnline());
 		text_max_players_s = String.valueOf(response.getPlayers().getMax());
 		text_version_s = response.getVersion().getName();
 		text_protocol_version_s = response.getVersion().getProtocol();
+		text_ping_s = String.valueOf(response.getTime());
 		favicon_s = response.getFavicon();
 		text_description.setText(text_motd_s);
-		text_players.setText(text_online_players_s + " / " + text_max_players_s);
+		text_players.setText(getPlayersText(text_online_players_s, text_max_players_s));
 		text_version.setText(text_version_s);
 		text_protocol_version.setText(text_protocol_version_s);
-		if (favicon_s != null && !favicon_s.isEmpty()) imageview_server_icon.setImage(new Image(getFaviconAsInputStream(favicon_s)));
+		text_ping.setText(text_ping_s + " ms");
+		if (favicon_s != null
+				&& !favicon_s.isEmpty()) imageview_server_icon.setImage(new Image(getFaviconAsInputStream(favicon_s)));
+	}
+
+	//もっと効率の良い処理があるはずだ。Stringってこうやっていいのだろうか。
+	private String getPlayersText(String text_online_players_s, String text_max_players_s) {
+		String blank_front = "", blank_back = "";
+		int add_blank_length = text_max_players_s.length() - text_online_players_s.length();
+		if (add_blank_length != 0) {
+			for (int i = 0; i < add_blank_length; i++) {
+				if (add_blank_length > 0) blank_front += " ";
+				else blank_back += " ";
+				Main.printDebug("blank!");
+			}
+		}
+		return blank_front + text_online_players_s + " / " + text_max_players_s + blank_back;
 	}
 
 	public InputStream getFaviconAsInputStream(String favicon) {

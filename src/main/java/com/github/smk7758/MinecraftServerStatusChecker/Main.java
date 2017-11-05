@@ -8,7 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-	public static final String program_name = "MinecraftServerStatusChecker_0.0.3";
+	public static final String program_name = "MinecraftServerStatusChecker_0.0.4";
 	public static final String fxml_url = "Screens/Main.fxml";
 	public static Stage primary_stage = null;
 	private static boolean debug_mode = true; // for Debug.
@@ -45,10 +45,24 @@ public class Main extends Application {
 		String is_favicon = "true";
 		if (response.getFavicon() == null || response.getFavicon().isEmpty()) is_favicon = "false";
 		String resposes = "Version: " + response.getVersion().getName() + "\n"
-				+ "OnlinePlayers / MaximumPlayers: " + response.getPlayers().getOnline() + " / " + response.getPlayers().getMax() + "\n"
+				+ "OnlinePlayers / MaximumPlayers: " + getPlayersText(response.getPlayers().getOnline(), response.getPlayers().getMax()) + "\n"
 				+ "Ping: " + response.getTime() + "\n"
 				+ "isFavicon(Icon): " + is_favicon + "\n"
 				+ "Description(MOTD): " + response.getDescription().getText();
 		System.out.println(resposes);
+	}
+
+	private static String getPlayersText(int text_online_players, int text_max_players) {
+		String text_online_players_s = String.valueOf(text_online_players);
+		String text_max_players_s = String.valueOf(text_max_players);
+		String blank_front = "", blank_back = "";
+		int add_blank_length = text_max_players_s.length() - text_online_players_s.length();
+		if (add_blank_length != 0) {
+			for (int i = 0; i < add_blank_length; i++) {
+				if (add_blank_length > 0) blank_front += " ";
+				else blank_back += " ";
+			}
+		}
+		return blank_front + text_online_players_s + " / " + text_max_players_s + blank_back;
 	}
 }

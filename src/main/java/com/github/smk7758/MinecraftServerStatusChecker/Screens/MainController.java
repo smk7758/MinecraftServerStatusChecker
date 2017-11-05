@@ -70,7 +70,7 @@ public class MainController {
 		}
 		serverlist_items.put(pane, sli);
 		// host→?
-		pane.setLayoutY(pane_children.getChildren().size() * 120);
+		pane.setLayoutY(pane_children.getChildren().size() * 122);
 		pane_children.getChildren().add(pane);
 		pane_serverlist.setContent(pane_children);
 
@@ -78,6 +78,15 @@ public class MainController {
 		textfield_server_name.setText("");
 		textfield_adress.setText("");
 		textfield_port.setText("");
+	}
+
+	private void onButtonRemove() {
+	}
+
+	private void onButtonRemoveAll() {
+	}
+
+	private void onButtonClearInfo() {
 	}
 
 	private void onButtonUpItem() {
