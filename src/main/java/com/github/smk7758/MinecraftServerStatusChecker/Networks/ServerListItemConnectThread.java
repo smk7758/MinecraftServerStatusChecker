@@ -46,6 +46,10 @@ public class ServerListItemConnectThread extends Thread {
 		return already_run;
 	}
 
+	public ServerListItemController getServerListItemController() {
+		return this.slictr;
+	}
+
 	@Override
 	public void run() {
 		already_run = true;

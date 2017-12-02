@@ -23,7 +23,7 @@ public class ServerListItemController {
 
 	@FXML
 	private void onServerListItemClicked() {
-		Main.printDebug("clicked serverlistitem");
+		Main.printDebug("clicked SLI, from SLICtr");
 	}
 
 	public void setInitializeItems(String server_name, String address, String port) {
@@ -31,6 +31,20 @@ public class ServerListItemController {
 		text_adress.setText(address);
 		text_port.setText(port);
 	}
+
+	public String[] getInitializeItems() {
+		String[] items = {text_server_name.getText(), text_adress.getText(), text_port.getText()};
+		return items;
+	}
+
+	// public void setClearItems() {
+	// text_description.setText("");
+	// text_players.setText(getPlayersText("", ""));
+	// text_version.setText("");
+	// text_protocol_version.setText("");
+	// text_ping.setText("");
+	// imageview_server_icon.setImage(new Image(""));
+	// }
 
 	public void setImageStatus(int status) {
 		String icon_name = null;
@@ -70,7 +84,7 @@ public class ServerListItemController {
 				&& !favicon_s.isEmpty()) imageview_server_icon.setImage(new Image(getFaviconAsInputStream(favicon_s)));
 	}
 
-	//もっと効率の良い処理があるはずだ。Stringってこうやっていいのだろうか。
+	// もっと効率の良い処理があるはずだ。Stringってこうやっていいのだろうか。
 	private String getPlayersText(String text_online_players_s, String text_max_players_s) {
 		String blank_front = "", blank_back = "";
 		int add_blank_length = text_max_players_s.length() - text_online_players_s.length();
@@ -78,7 +92,6 @@ public class ServerListItemController {
 			for (int i = 0; i < add_blank_length; i++) {
 				if (add_blank_length > 0) blank_front += " ";
 				else blank_back += " ";
-				Main.printDebug("blank!");
 			}
 		}
 		return blank_front + text_online_players_s + " / " + text_max_players_s + blank_back;

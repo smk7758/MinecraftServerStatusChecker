@@ -7,24 +7,32 @@ import java.util.HashMap;
 import com.github.smk7758.MinecraftServerStatusChecker.Main;
 import com.github.smk7758.MinecraftServerStatusChecker.Networks.ServerListItemConnectThread;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 
 public class MainController {
 	private boolean check_host_faster = false;
-	private Pane pane_children = new Pane();
+	// private Pane pane_children = new Pane();
+	private ObservableList<Pane> items = FXCollections.observableArrayList();
 	private HashMap<Pane, ServerListItemConnectThread> serverlist_items = new HashMap<>();
 	@FXML
-	private Button button_add_list, button_connect;
+	private Button button_add_list, button_connect, button_up, button_down, button_remove, button_save;
 	@FXML
 	private TextField textfield_port, textfield_adress, textfield_server_name;
 	@FXML
-	private ScrollPane pane_serverlist; // ListViewがいいかもしれない。
+	private ListView<Pane> listview_serverlist;
+	// private ScrollPane pane_serverlist; // ListViewがいいかもしれない。
+
+	public void initialize() {
+		listview_serverlist.autosize();
+	}
 
 	@FXML
 	private void onButtonAddServer() {
@@ -70,34 +78,55 @@ public class MainController {
 		}
 		serverlist_items.put(pane, sli);
 		// host→?
-		pane.setLayoutY(pane_children.getChildren().size() * 122);
-		pane_children.getChildren().add(pane);
-		pane_serverlist.setContent(pane_children);
+		// pane.setLayoutY(items.size() * 122);
+		items.add(pane);
+		listview_serverlist.setItems(items);
 
-		//refresh
+		// refresh
 		textfield_server_name.setText("");
 		textfield_adress.setText("");
 		textfield_port.setText("");
 	}
 
-	private void onButtonRemove() {
+	@FXML
+	private void onButtonRemoveItem() {
+		int select_item_index = getSelectServerListItemIndex();
+		items.remove(select_item_index);
 	}
 
-	private void onButtonRemoveAll() {
+	@FXML
+	private void onButtonRemoveAllItem() {
 	}
 
-	private void onButtonClearInfo() {
-	}
-
+	@FXML
 	private void onButtonUpItem() {
+		changeItemIndex(-1);
 	}
 
+	@FXML
 	private void onButtonDownItem() {
+		changeItemIndex(1);
+	}
+
+	// If you want to up, write - 1, to down, write (+) 1.
+	private void changeItemIndex(int number) {
+		int select_item_index = getSelectServerListItemIndex();
+		if (number != 0) return;
+		else if (number < 0 && select_item_index == 0) return; // 最上部の時。
+		else if (number > 0 && select_item_index == items.size()) return; // 最下部の時。
+		Pane select_item_temp = items.get(select_item_index);
+		items.remove(select_item_index);
+		items.add(select_item_index + number, select_item_temp);
+	}
+
+	//ファイルをどうするかとかいろいろ。
+	@FXML
+	private void onButtonSaveItem() {
 	}
 
 	@FXML
 	private void onButtonConnect() {
-		for (Node pane : pane_children.getChildren()) {
+		for (Node pane : items) {
 			if (pane instanceof Pane) {
 				ServerListItemConnectThread sli = serverlist_items.get((Pane) pane).isAlreadRun()
 						? serverlist_items.get((Pane) pane).refresh() // alread run
@@ -106,5 +135,23 @@ public class MainController {
 				sli.start();
 			}
 		}
+	}
+
+	//ていうか必要？
+	@FXML
+	private void onButtonClearInfo() {
+		String[] items_temp = getSelectServerListItem().getServerListItemController().getInitializeItems();
+		int item_index_temp = getSelectServerListItemIndex();
+		// todo: Item作成部を別メソッドにして、上記のデータを用いて、再作成。
+	}
+
+	private ServerListItemConnectThread getSelectServerListItem() {
+		Pane select_item_pane = items.get(getSelectServerListItemIndex()); // Pane取得
+		return serverlist_items.get(select_item_pane); // Thread取得
+	}
+
+	private int getSelectServerListItemIndex() {
+		int select_item_index = listview_serverlist.getSelectionModel().getSelectedIndex();
+		return select_item_index;
 	}
 }

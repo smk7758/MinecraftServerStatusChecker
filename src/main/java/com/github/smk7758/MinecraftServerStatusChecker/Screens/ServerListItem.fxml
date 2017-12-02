@@ -11,13 +11,14 @@
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#onServerListItemClicked" prefHeight="120.0" prefWidth="590.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.smk7758.MinecraftServerStatusChecker.Screens.ServerListItemController">
   <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="1.0" prefWidth="100.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="4.0" prefWidth="0.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="2.0" prefWidth="0.0" />
       <ColumnConstraints hgrow="SOMETIMES" percentWidth="15.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="35.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="0.0" prefWidth="10.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="27.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="3.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="2.0" prefWidth="100.0" />
       <ColumnConstraints />
       <ColumnConstraints />
   </columnConstraints>
@@ -44,7 +45,7 @@
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Versions:" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Port:" GridPane.columnIndex="5" GridPane.rowIndex="4" />
       <Text fx:id="text_port" strokeType="OUTSIDE" strokeWidth="0.0" text="xxxxx" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
-      <Line endX="580.0" strokeWidth="2.0" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
-      <Line endX="580.0" strokeWidth="2.0" GridPane.columnIndex="1" GridPane.valignment="BASELINE" />
+      <Line endX="570.0" strokeWidth="2.0" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
+      <Line endX="570.0" strokeWidth="2.0" GridPane.columnIndex="1" GridPane.valignment="BASELINE" />
    </children>
 </GridPane>

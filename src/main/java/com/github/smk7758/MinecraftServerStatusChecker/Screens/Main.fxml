@@ -26,7 +26,7 @@
       <Button fx:id="button_connect" mnemonicParsing="false" onAction="#onButtonConnect" text="Connect" textAlignment="CENTER" GridPane.columnIndex="5" />
       <Button fx:id="button_add_server" mnemonicParsing="false" onAction="#onButtonAddServer" text="Add Server" GridPane.columnIndex="4" />
       <Line endX="500.0" startX="-100.0" GridPane.rowIndex="2" />
-      <ScrollPane fx:id="pane_serverlist" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="6" GridPane.rowIndex="3" />
       <TextField fx:id="textfield_server_name" promptText="server name" GridPane.columnSpan="3" />
+      <ListView fx:id="listview_serverlist" GridPane.columnSpan="6" GridPane.rowIndex="3" />
    </children>
 </GridPane>
