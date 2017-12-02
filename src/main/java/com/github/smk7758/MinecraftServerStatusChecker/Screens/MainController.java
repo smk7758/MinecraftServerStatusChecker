@@ -31,14 +31,17 @@ public class MainController {
 	// private ScrollPane pane_serverlist; // ListViewがいいかもしれない。
 
 	public void initialize() {
+		listview_serverlist.setFixedCellSize(122); // ListViewのitemの間のなんかこれ(cell)の大きさを変えられる。
 		listview_serverlist.autosize();
 	}
 
 	@FXML
 	private void onButtonAddServer() {
-		// check field
+		// initialize.
 		String server_name, address, port_s;
 		short port = 25565;
+
+		// get fields and substitution them.
 		server_name = textfield_server_name.getText();
 		address = textfield_adress.getText();
 		if (address.isEmpty()) address = "127.0.0.1";
@@ -51,17 +54,46 @@ public class MainController {
 			System.err.println("Port field is not a number.");
 		}
 
-		// add Pane of ServerList
-		ServerListItemController slictr = null;
+		// get sli screen items. (add Pane of ServerList)
+		FXMLLoader sli_fxml = getFXMLLoader();
+		Pane pane = getPane(sli_fxml);
+		ServerListItemController slictr = getServerListItemController(sli_fxml);
+		ServerListItemConnectThread sli = getServerListItemConnectThread(address, port, slictr, server_name);
+
+		serverlist_items.put(pane, sli);
+		// pane.setLayoutY(items.size() * 122);
+		items.add(pane);
+		listview_serverlist.setItems(items);
+
+		// refresh Main screen items.
+		textfield_server_name.setText("");
+		textfield_adress.setText("");
+		textfield_port.setText("");
+	}
+
+	private FXMLLoader getFXMLLoader() {
 		FXMLLoader sli_fxml = new FXMLLoader(getClass().getResource("ServerListItem.fxml"));
+		return sli_fxml;
+	}
+
+	private Pane getPane(FXMLLoader sli_fxml) {
 		Pane pane = null;
 		try {
 			pane = sli_fxml.load();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		slictr = sli_fxml.getController();
+		return pane;
+	}
 
+	// ラムダ式ですかね。
+	private ServerListItemController getServerListItemController(FXMLLoader sli_fxml) {
+		ServerListItemController slictr = sli_fxml.getController();
+		return slictr;
+	}
+
+	private ServerListItemConnectThread getServerListItemConnectThread(String address, short port,
+			ServerListItemController slictr, String server_name) {
 		ServerListItemConnectThread sli = null;
 		if (check_host_faster) {
 			InetSocketAddress host = null;
@@ -70,22 +102,24 @@ public class MainController {
 			} catch (IllegalArgumentException ex) {
 				Main.printDebug("Port parameter is outside the specifid range of valid port values.");
 				System.err.println("Port parameter is outside the specifid range of valid port values.");
-				return;
+				return null;
 			}
 			sli = new ServerListItemConnectThread(slictr, server_name, host);
 		} else {
 			sli = new ServerListItemConnectThread(slictr, server_name, address, port);
 		}
-		serverlist_items.put(pane, sli);
-		// host→?
-		// pane.setLayoutY(items.size() * 122);
-		items.add(pane);
-		listview_serverlist.setItems(items);
+		return sli;
+	}
 
-		// refresh
-		textfield_server_name.setText("");
-		textfield_adress.setText("");
-		textfield_port.setText("");
+	private ServerListItemConnectThread getSelectServerListItem() {
+		Pane select_item_pane = items.get(getSelectServerListItemIndex()); // Pane取得
+		ServerListItemConnectThread sli = serverlist_items.get(select_item_pane); // Thread取得
+		return sli;
+	}
+
+	private int getSelectServerListItemIndex() {
+		int select_item_index = listview_serverlist.getSelectionModel().getSelectedIndex();
+		return select_item_index;
 	}
 
 	@FXML
@@ -119,7 +153,7 @@ public class MainController {
 		items.add(select_item_index + number, select_item_temp);
 	}
 
-	//ファイルをどうするかとかいろいろ。
+	// ファイルをどうするかとかいろいろ。
 	@FXML
 	private void onButtonSaveItem() {
 	}
@@ -137,21 +171,29 @@ public class MainController {
 		}
 	}
 
-	//ていうか必要？
 	@FXML
 	private void onButtonClearInfo() {
-		String[] items_temp = getSelectServerListItem().getServerListItemController().getInitializeItems();
+		//save temp
+		ServerListItemConnectThread sli_temp = getSelectServerListItem();
 		int item_index_temp = getSelectServerListItemIndex();
-		// todo: Item作成部を別メソッドにして、上記のデータを用いて、再作成。
+
+		//remove
+		serverlist_items.remove(items.get(item_index_temp));
+		items.remove(item_index_temp);
+
+		// add
+		FXMLLoader sli_fxml = getFXMLLoader();
+		Pane pane = getPane(sli_fxml);
+		ServerListItemController slictr = getServerListItemController(sli_fxml);
+		ServerListItemConnectThread sli = getServerListItemConnectThread(sli_temp.getAdress(), sli_temp.getPort(),
+				slictr, sli_temp.getServerName());
+
+		serverlist_items.put(pane, sli);
+		items.add(item_index_temp, pane);
+		listview_serverlist.setItems(items);
+		// ていうか必要？
 	}
 
-	private ServerListItemConnectThread getSelectServerListItem() {
-		Pane select_item_pane = items.get(getSelectServerListItemIndex()); // Pane取得
-		return serverlist_items.get(select_item_pane); // Thread取得
-	}
-
-	private int getSelectServerListItemIndex() {
-		int select_item_index = listview_serverlist.getSelectionModel().getSelectedIndex();
-		return select_item_index;
-	}
+//	private void onButtonSettingWindowOpen() {
+//	}
 }

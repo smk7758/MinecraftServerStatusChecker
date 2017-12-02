@@ -12,30 +12,39 @@ public class ServerListItemConnectThread extends Thread {
 	private InetSocketAddress host = null;
 	private String server_name = "";
 	private boolean already_run = false;
+	private String address = "127.0.0.1";
+	private short port = 25565;
 
 	public ServerListItemConnectThread(ServerListItemController slictr, String server_name, InetSocketAddress host) {
-		initialize(slictr, server_name, host);
+		initialize(slictr, server_name, host, host.getHostString(), (short) host.getPort());
 	}
 
 	public ServerListItemConnectThread(ServerListItemController slictr, String server_name, String address,
 			short port) {
-		try {
-			this.host = new InetSocketAddress(address, port);
-		} catch (IllegalArgumentException ex) {
-			Main.printDebug("Port parameter is outside the specifid range of valid port values.");
-			System.err.println("Port parameter is outside the specifid range of valid port values.");
-			return;
-		}
-		initialize(slictr, server_name, this.host);
+		initialize(slictr, server_name, null, address, port);
 	}
 
-	private void initialize(ServerListItemController slictr, String server_name, InetSocketAddress host) {
+	private void initialize(ServerListItemController slictr, String server_name, InetSocketAddress host, String address, short port) {
 		//similer as new SliCtr
-		slictr.setInitializeItems(server_name, host.getHostName(), String.valueOf(host.getPort()));
+		slictr.setInitializeItems(server_name, address, String.valueOf(port));
 		this.setDaemon(true);
 		this.slictr = slictr;
 		this.server_name = server_name;
 		this.host = host;
+		this.address = address;
+		this.port = port;
+	}
+
+	public String getAdress() {
+		return this.address;
+	}
+
+	public short getPort() {
+		return this.port;
+	}
+
+	public String getServerName() {
+		return this.server_name;
 	}
 
 	public ServerListItemConnectThread refresh() {
@@ -53,6 +62,15 @@ public class ServerListItemConnectThread extends Thread {
 	@Override
 	public void run() {
 		already_run = true;
+		if (this.host == null) {
+			try {
+				this.host = new InetSocketAddress(this.address, this.port);
+			} catch (IllegalArgumentException ex) {
+				Main.printDebug("Port parameter is outside the specifid range of valid port values.");
+				System.err.println("Port parameter is outside the specifid range of valid port values.");
+				return;
+			}
+		}
 		slictr.setImageStatus(1);
 		ResponseServerStatus rss = new ResponseServerStatus(host);
 		ServerStatusResponse response = rss.getResponse();

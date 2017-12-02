@@ -3,7 +3,6 @@ package com.github.smk7758.MinecraftServerStatusChecker.Screens;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import com.github.smk7758.MinecraftServerStatusChecker.Main;
 import com.github.smk7758.MinecraftServerStatusChecker.Networks.MinecraftServerStatus.ServerStatusResponse;
 
 import javafx.fxml.FXML;
@@ -21,20 +20,15 @@ public class ServerListItemController {
 	@FXML
 	private ImageView imageview_server_icon, imageview_status;
 
-	@FXML
-	private void onServerListItemClicked() {
-		Main.printDebug("clicked SLI, from SLICtr");
-	}
+//	@FXML
+//	private void onServerListItemClicked() {
+//		Main.printDebug("clicked SLI, from SLICtr");
+//	}
 
 	public void setInitializeItems(String server_name, String address, String port) {
 		text_server_name.setText(server_name);
 		text_adress.setText(address);
 		text_port.setText(port);
-	}
-
-	public String[] getInitializeItems() {
-		String[] items = {text_server_name.getText(), text_adress.getText(), text_port.getText()};
-		return items;
 	}
 
 	// public void setClearItems() {
