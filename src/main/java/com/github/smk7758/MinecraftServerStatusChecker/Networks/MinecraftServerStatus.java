@@ -192,6 +192,8 @@ public class MinecraftServerStatus implements AutoCloseable {
 	 */
 	public long recievePing(long client_time) throws IOException {
 		// Recieve Ping
+
+		//Under this is likely not used.
 		int ping_size = readVarInt();
 		if (ping_size != 9) throw new IOException("Invalid size.");
 		int id = readVarInt();
@@ -228,6 +230,7 @@ public class MinecraftServerStatus implements AutoCloseable {
 	}
 
 	private int readVarInt() throws IOException {
+		int time_receive = (int)System.currentTimeMillis();
 		int numRead = 0;
 		int result = 0;
 		byte read;

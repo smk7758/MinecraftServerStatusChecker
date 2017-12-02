@@ -145,18 +145,23 @@ public class MainController {
 	// If you want to up, write - 1, to down, write (+) 1.
 	private void changeItemIndex(int number) {
 		int select_item_index = getSelectServerListItemIndex();
-		if (number != 0) return;
+		if (number == 0) return;
 		else if (number < 0 && select_item_index == 0) return; // 最上部の時。
 		else if (number > 0 && select_item_index == items.size()) return; // 最下部の時。
 		Pane select_item_temp = items.get(select_item_index);
 		items.remove(select_item_index);
 		items.add(select_item_index + number, select_item_temp);
+		System.out.println("up");
 	}
 
 	// ファイルをどうするかとかいろいろ。
 	@FXML
 	private void onButtonSaveItem() {
 	}
+
+//	@FXML
+//	private void onButtonEdit() {
+//	}
 
 	@FXML
 	private void onButtonConnect() {
@@ -192,6 +197,7 @@ public class MainController {
 		items.add(item_index_temp, pane);
 		listview_serverlist.setItems(items);
 		// ていうか必要？
+		//バグ: remove で１個上のやつを選択する。
 	}
 
 //	private void onButtonSettingWindowOpen() {
