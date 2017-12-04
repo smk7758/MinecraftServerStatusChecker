@@ -26,7 +26,7 @@ public class ServerListItemConnectThread extends Thread {
 
 	private void initialize(ServerListItemController slictr, String server_name, InetSocketAddress host, String address,
 			short port) {
-		// similer as new SliCtr
+		// similar as new SliCtr
 		slictr.setInitializeItems(server_name, address, String.valueOf(port));
 		this.setDaemon(true);
 		this.slictr = slictr;
@@ -68,7 +68,6 @@ public class ServerListItemConnectThread extends Thread {
 				this.host = new InetSocketAddress(this.address, this.port);
 			} catch (IllegalArgumentException ex) {
 				Main.printDebug("Port parameter is outside the specifid range of valid port values.");
-				System.err.println("Port parameter is outside the specifid range of valid port values.");
 				return;
 			}
 		}
@@ -95,9 +94,15 @@ public class ServerListItemConnectThread extends Thread {
 			try (MinecraftServerStatus mcss = new MinecraftServerStatus(host);) {
 				mcss.sendHandshakePacket();
 				mcss.sendServerStatusPacket();
-				response = mcss.recieveServerStatus();
+				if (Main.debug_mode) {
+					String response_string = mcss.receiveServerStatusResponseAsString();
+					Main.outputResponseToLogFile(response_string, server_name, address, port);
+					response = mcss.getServerStatusResponse(response_string);
+				} else {
+					response = mcss.receiveServerStatus();
+				}
 				mcss.sendPingPacket();
-				int time_receive = (int) mcss.recievePing();
+				int time_receive = (int) mcss.receivePing();
 				response.setTime(time_receive);
 				Main.printResponse(server_name, response);
 			} catch (IOException ex) {

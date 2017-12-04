@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -24,6 +25,8 @@ public class MainController {
 	private HashMap<Pane, ServerListItemConnectThread> serverlist_items = new HashMap<>();
 	@FXML
 	private Button button_add_list, button_connect, button_up, button_down, button_remove, button_save;
+	@FXML
+	private CheckBox checkbox_debug_mode;
 	@FXML
 	private TextField textfield_port, textfield_adress, textfield_server_name;
 	@FXML
@@ -51,12 +54,11 @@ public class MainController {
 			port = Short.parseShort(port_s);
 		} catch (NumberFormatException ex) {
 			Main.printDebug("Port field is not a number.");
-			System.err.println("Port field is not a number.");
 		}
 
 		// get sli screen items. (add Pane of ServerList)
-		FXMLLoader sli_fxml = getFXMLLoader();
-		Pane pane = getPane(sli_fxml);
+		FXMLLoader sli_fxml = getServerListItemFXMLLoader();
+		Pane pane = getServerListItemPane(sli_fxml);
 		ServerListItemController slictr = getServerListItemController(sli_fxml);
 		ServerListItemConnectThread sli = getServerListItemConnectThread(address, port, slictr, server_name);
 
@@ -65,18 +67,23 @@ public class MainController {
 		items.add(pane);
 		listview_serverlist.setItems(items);
 
+		// PrintDebugThings
+		Main.printDebug("ServerName: " + server_name + System.lineSeparator()
+				+ "ServerAddress: " + address + ", ServerPort: " + port + System.lineSeparator()
+				+ "ItemsCount: " + items.size());
+
 		// refresh Main screen items.
 		textfield_server_name.setText("");
 		textfield_adress.setText("");
 		textfield_port.setText("");
 	}
 
-	private FXMLLoader getFXMLLoader() {
+	private FXMLLoader getServerListItemFXMLLoader() {
 		FXMLLoader sli_fxml = new FXMLLoader(getClass().getResource("ServerListItem.fxml"));
 		return sli_fxml;
 	}
 
-	private Pane getPane(FXMLLoader sli_fxml) {
+	private Pane getServerListItemPane(FXMLLoader sli_fxml) {
 		Pane pane = null;
 		try {
 			pane = sli_fxml.load();
@@ -101,7 +108,6 @@ public class MainController {
 				host = new InetSocketAddress(address, port);
 			} catch (IllegalArgumentException ex) {
 				Main.printDebug("Port parameter is outside the specifid range of valid port values.");
-				System.err.println("Port parameter is outside the specifid range of valid port values.");
 				return null;
 			}
 			sli = new ServerListItemConnectThread(slictr, server_name, host);
@@ -159,18 +165,24 @@ public class MainController {
 	private void onButtonSaveItem() {
 	}
 
-//	@FXML
-//	private void onButtonEdit() {
-//	}
+	// @FXML
+	// private void onButtonEdit() {
+	// }
 
 	@FXML
 	private void onButtonConnect() {
+		// checkbox_debug_mode.isIndeterminate();
+		Main.debug_mode = checkbox_debug_mode.isSelected() ? true : false;
+		if (checkbox_debug_mode.isSelected()) Main.debug_mode = true;
+		else Main.debug_mode = false;
+		Main.printDebug("checkbox_debug_mode: " + checkbox_debug_mode.isSelected()
+				+ ", MainDebugMode: " + Main.debug_mode + "");
 		for (Node pane : items) {
 			if (pane instanceof Pane) {
 				ServerListItemConnectThread sli = serverlist_items.get((Pane) pane).isAlreadRun()
-						? serverlist_items.get((Pane) pane).refresh() // alread run
-						: serverlist_items.get((Pane) pane); // not once run
-				Main.printDebug("connect?");
+						? serverlist_items.get((Pane) pane).refresh() // Already running.
+						: serverlist_items.get((Pane) pane); // Isn't running.
+				Main.printDebug("Starting to connect...");
 				sli.start();
 			}
 		}
@@ -178,17 +190,17 @@ public class MainController {
 
 	@FXML
 	private void onButtonClearInfo() {
-		//save temp
+		// save temp
 		ServerListItemConnectThread sli_temp = getSelectServerListItem();
 		int item_index_temp = getSelectServerListItemIndex();
 
-		//remove
+		// remove
 		serverlist_items.remove(items.get(item_index_temp));
 		items.remove(item_index_temp);
 
 		// add
-		FXMLLoader sli_fxml = getFXMLLoader();
-		Pane pane = getPane(sli_fxml);
+		FXMLLoader sli_fxml = getServerListItemFXMLLoader();
+		Pane pane = getServerListItemPane(sli_fxml);
 		ServerListItemController slictr = getServerListItemController(sli_fxml);
 		ServerListItemConnectThread sli = getServerListItemConnectThread(sli_temp.getAdress(), sli_temp.getPort(),
 				slictr, sli_temp.getServerName());
@@ -197,9 +209,9 @@ public class MainController {
 		items.add(item_index_temp, pane);
 		listview_serverlist.setItems(items);
 		// ていうか必要？
-		//バグ: remove で１個上のやつを選択する。
+		// バグ: remove で１個上のやつを選択する。
 	}
 
-//	private void onButtonSettingWindowOpen() {
-//	}
+	// private void onButtonSettingWindowOpen() {
+	// }
 }

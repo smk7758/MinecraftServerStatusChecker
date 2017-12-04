@@ -25,18 +25,18 @@ public class MinecraftServerStatus implements AutoCloseable {
 	private Gson gson = new Gson();
 
 	/**
-	 * @param host the adress and the port of the server you want to access.
-	 * @throws IOException some conection error.
+	 * @param host the address and the port of the server you want to access.
+	 * @throws IOException some connection error.
 	 */
 	public MinecraftServerStatus(InetSocketAddress host) throws IOException {
 		initialize(host, this.timeout, this.protocol_version);
 	}
 
 	/**
-	 * @param host the adress and the port of the server you want to access.
-	 * @param timeout input block millisec.
+	 * @param host the address and the port of the server you want to access.
+	 * @param timeout input block millisecond.
 	 * @param protocol_version each version of Minecraft has the different one.
-	 * @throws IOException some conection error.
+	 * @throws IOException some connection error.
 	 */
 	public MinecraftServerStatus(InetSocketAddress host, int timeout, int protocol_version) throws IOException {
 		this.timeout = timeout;
@@ -47,7 +47,7 @@ public class MinecraftServerStatus implements AutoCloseable {
 	/**
 	 * @param address the address of the server you want to access.
 	 * @param port the port of the server you want to access.
-	 * @throws IOException some conection error.
+	 * @throws IOException some connection error.
 	 * @deprecated Can't get exception properly.
 	 */
 	public MinecraftServerStatus(String address, short port) throws IOException {
@@ -57,9 +57,9 @@ public class MinecraftServerStatus implements AutoCloseable {
 	/**
 	 * @param address the address of the server you want to access.
 	 * @param port the port of the server you want to access.
-	 * @param timeout input block millisec.
+	 * @param timeout input block millisecond.
 	 * @param protocol_version each version of Minecraft has the different one.
-	 * @throws IOException some conection error.
+	 * @throws IOException some connection error.
 	 * @deprecated Can't get exception properly.
 	 */
 	public MinecraftServerStatus(String address, short port, int timeout, int protocol_version) throws IOException {
@@ -67,15 +67,15 @@ public class MinecraftServerStatus implements AutoCloseable {
 	}
 
 	/**
-	 * @param host the adress and the port of the server you want to access.
-	 * @param timeout input block millisec.
+	 * @param host the address and the port of the server you want to access.
+	 * @param timeout input block millisecond.
 	 * @param protocol_version each version of Minecraft has the different one.
-	 * @throws IOException some conection error.
+	 * @throws IOException some connection error.
 	 */
 	private void initialize(InetSocketAddress host, int timeout, int protocol_version) throws IOException {
 		this.host = host;
 		socket = new Socket();
-		socket.setSoTimeout(timeout); // Input block millisec.
+		socket.setSoTimeout(timeout); // Input block millisecond.
 		socket.connect(host, timeout); // connect to host(wait untill timeout when no connect);
 		is = socket.getInputStream();
 		os = socket.getOutputStream();
@@ -86,9 +86,9 @@ public class MinecraftServerStatus implements AutoCloseable {
 	/**
 	 * @param address the address of the server you want to access.
 	 * @param port the port of the server you want to access.
-	 * @param timeout input block millisec.
+	 * @param timeout input block millisecond.
 	 * @param protocol_version each version of Minecraft has the different one.
-	 * @throws IOException some conection error.
+	 * @throws IOException some connection error.
 	 * @deprecated Can't get exception properly.
 	 */
 	private void initialize(String address, short port, int timeout, int protocol_version) throws IOException {
@@ -97,9 +97,9 @@ public class MinecraftServerStatus implements AutoCloseable {
 	}
 
 	/**
-	 * if you want to stop the conection, use this. also you have to use when you want to stop the program.
+	 * if you want to stop the connection, use this. also you have to use when you want to stop the program.
 	 *
-	 * @throws IOException some conection error.
+	 * @throws IOException some connection error.
 	 */
 	@Override
 	public void close() throws IOException {
@@ -117,7 +117,7 @@ public class MinecraftServerStatus implements AutoCloseable {
 	/**
 	 * send a packet for Handshake.
 	 *
-	 * @throws IOException some conection error.
+	 * @throws IOException some connection error.
 	 */
 	public void sendHandshakePacket() throws IOException {
 		// Send Handshake
@@ -130,7 +130,7 @@ public class MinecraftServerStatus implements AutoCloseable {
 	/**
 	 * @return a packet data of byte for Handshake.
 	 * @param state - 1 or 2, 1(send a request for status), 2(send a request for login).
-	 * @throws IOException some conection error
+	 * @throws IOException some connection error
 	 */
 	private byte[] getHandshakePacketData(int state) throws IOException {
 		try (ByteArrayOutputStream output_data = new ByteArrayOutputStream();
@@ -148,7 +148,7 @@ public class MinecraftServerStatus implements AutoCloseable {
 	/**
 	 * send a packet to get ServerListRespond.
 	 *
-	 * @throws IOException some conection error
+	 * @throws IOException some connection error
 	 */
 	public void sendServerStatusPacket() throws IOException {
 		// Send Request
@@ -164,7 +164,7 @@ public class MinecraftServerStatus implements AutoCloseable {
 	 * send a packet for Ping.
 	 *
 	 * @param client_time the time you are.
-	 * @throws IOException some conection error.
+	 * @throws IOException some connection error.
 	 */
 	public void sendPingPacket(long client_time) throws IOException {
 		// Send Ping
@@ -174,26 +174,26 @@ public class MinecraftServerStatus implements AutoCloseable {
 	}
 
 	/**
-	 * recieve a packet of Ping.
+	 * receive a packet of Ping.
 	 *
 	 * @return how long did the ping take.
-	 * @throws IOException some conection error.
+	 * @throws IOException some connection error.
 	 */
-	public long recievePing() throws IOException {
-		return recievePing(System.currentTimeMillis());
+	public long receivePing() throws IOException {
+		return receivePing(System.currentTimeMillis());
 	}
 
 	/**
-	 * recieve a packet of Ping.
+	 * receive a packet of Ping.
 	 *
 	 * @param client_time the time you are.
 	 * @return how long did the ping take.
-	 * @throws IOException some conection error.
+	 * @throws IOException some connection error.
 	 */
-	public long recievePing(long client_time) throws IOException {
-		// Recieve Ping
+	public long receivePing(long client_time) throws IOException {
+		// Receive Ping
 
-		//Under this is likely not used.
+		// Under this is likely not used.
 		int ping_size = readVarInt();
 		if (ping_size != 9) throw new IOException("Invalid size.");
 		int id = readVarInt();
@@ -208,10 +208,20 @@ public class MinecraftServerStatus implements AutoCloseable {
 	 * gives you the response from the server.
 	 *
 	 * @return the class from JSON.
-	 * @throws IOException some conection error.
+	 * @throws IOException some connection error.
 	 */
-	public ServerStatusResponse recieveServerStatus() throws IOException {
-		// Recieve Respond
+	public ServerStatusResponse receiveServerStatus() throws IOException {
+		ServerStatusResponse response = getServerStatusResponse(receiveServerStatusResponseAsString());
+		return response;
+	}
+
+	public ServerStatusResponse getServerStatusResponse(String response_string) {
+		ServerStatusResponse response = gson.fromJson(response_string, ServerStatusResponse.class);
+		return response;
+	}
+
+	public String receiveServerStatusResponseAsString() throws IOException {
+		// Receive Respond
 		int respond_size = readVarInt();
 		if (respond_size == 0) throw new IOException("Invalid size. It's too shrot.");
 
@@ -225,12 +235,11 @@ public class MinecraftServerStatus implements AutoCloseable {
 		byte[] respond_byte = new byte[respond_string_length];
 		dis.readFully(respond_byte);
 		String respond_string = new String(respond_byte);
-		ServerStatusResponse response = gson.fromJson(respond_string, ServerStatusResponse.class);
-		return response;
+		return respond_string;
 	}
 
 	private int readVarInt() throws IOException {
-		int time_receive = (int)System.currentTimeMillis();
+		// int time_receive = (int)System.currentTimeMillis();
 		int numRead = 0;
 		int result = 0;
 		byte read;
