@@ -3,7 +3,7 @@ package com.github.smk7758.MinecraftServerStatusChecker.Screens;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import com.github.smk7758.MinecraftServerStatusChecker.Networks.MinecraftServerStatus.ServerStatusResponse;
+import com.github.smk7758.MinecraftServerStatusChecker.ServerStatusResponse.ServerStatusResponseInterface;
 
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
@@ -59,10 +59,11 @@ public class ServerListItemController {
 		imageview_status.setImage(image);
 	}
 
-	public void setItems(ServerStatusResponse response) {
+	public void setItems(ServerStatusResponseInterface response) {
 		String text_motd_s, text_online_players_s, text_max_players_s, text_version_s, text_protocol_version_s,
 				text_ping_s, favicon_s;
-		text_motd_s = response.getDescription().getText();
+				//todo;
+//		text_motd_s = response.getDescription().getText();
 		text_online_players_s = String.valueOf(response.getPlayers().getOnline());
 		text_max_players_s = String.valueOf(response.getPlayers().getMax());
 		text_version_s = response.getVersion().getName();

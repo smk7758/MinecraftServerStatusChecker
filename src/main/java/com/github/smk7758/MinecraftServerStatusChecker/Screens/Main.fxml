@@ -33,7 +33,7 @@
       <RowConstraints percentHeight="2.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <TextField fx:id="textfield_adress" promptText="adress" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+      <TextField fx:id="textfield_adress" promptText="address" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
       <TextField fx:id="textfield_port" promptText="port" GridPane.columnIndex="5" GridPane.rowIndex="1" />
       <Button fx:id="button_connect" mnemonicParsing="false" onAction="#onButtonConnect" text="Connect" textAlignment="CENTER" GridPane.columnIndex="7" />
       <Button fx:id="button_add_server" mnemonicParsing="false" onAction="#onButtonAddServer" text="Add Server" GridPane.columnIndex="5" />
@@ -46,6 +46,5 @@
       <Button fx:id="button_save" mnemonicParsing="false" onAction="#onButtonSaveItem" text="Save" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.rowIndex="7" />
       <Button fx:id="button_clear" mnemonicParsing="false" onAction="#onButtonClearInfo" text="Clear" GridPane.columnIndex="3" GridPane.columnSpan="3" GridPane.rowIndex="7" />
       <Button mnemonicParsing="false" text="Settings" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-      <CheckBox fx:id="checkbox_debug_mode" mnemonicParsing="false" text="DebugMode" GridPane.columnIndex="7" GridPane.rowIndex="7" />
    </children>
 </GridPane>

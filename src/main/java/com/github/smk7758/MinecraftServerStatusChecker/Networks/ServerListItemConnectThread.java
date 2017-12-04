@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 
 import com.github.smk7758.MinecraftServerStatusChecker.Main;
-import com.github.smk7758.MinecraftServerStatusChecker.Networks.MinecraftServerStatus.ServerStatusResponse;
 import com.github.smk7758.MinecraftServerStatusChecker.Screens.ServerListItemController;
+import com.github.smk7758.MinecraftServerStatusChecker.ServerStatusResponse.ServerStatusResponseInterface;
 
 public class ServerListItemConnectThread extends Thread {
 	private ServerListItemController slictr = null;
@@ -26,7 +26,7 @@ public class ServerListItemConnectThread extends Thread {
 
 	private void initialize(ServerListItemController slictr, String server_name, InetSocketAddress host, String address,
 			short port) {
-		// similar as new SliCtr
+		// similer as new SliCtr
 		slictr.setInitializeItems(server_name, address, String.valueOf(port));
 		this.setDaemon(true);
 		this.slictr = slictr;
@@ -68,12 +68,13 @@ public class ServerListItemConnectThread extends Thread {
 				this.host = new InetSocketAddress(this.address, this.port);
 			} catch (IllegalArgumentException ex) {
 				Main.printDebug("Port parameter is outside the specifid range of valid port values.");
+				System.err.println("Port parameter is outside the specifid range of valid port values.");
 				return;
 			}
 		}
 		slictr.setImageStatus(1);
 		ResponseServerStatus rss = new ResponseServerStatus(host);
-		ServerStatusResponse response = rss.getResponse();
+		ServerStatusResponseInterface response = rss.getResponse();
 		if (response != null) {
 			slictr.setItems(response);
 			slictr.setImageStatus(2);
@@ -89,20 +90,21 @@ public class ServerListItemConnectThread extends Thread {
 			this.host = host;
 		}
 
-		public ServerStatusResponse getResponse() {
-			ServerStatusResponse response = null;
+		@SuppressWarnings("rawtypes")
+		public ServerStatusResponseInterface getResponse() {
+			ServerStatusResponseInterface response = null;
 			try (MinecraftServerStatus mcss = new MinecraftServerStatus(host);) {
 				mcss.sendHandshakePacket();
 				mcss.sendServerStatusPacket();
 				if (Main.debug_mode) {
-					String response_string = mcss.receiveServerStatusResponseAsString();
-					Main.outputResponseToLogFile(response_string, server_name, address, port);
+					String response_string = mcss.recieveServerStatusAsString();
+					Main.outputToLogFile(response_string, address, port);
 					response = mcss.getServerStatusResponse(response_string);
 				} else {
-					response = mcss.receiveServerStatus();
+					response = mcss.recieveServerStatus();
 				}
 				mcss.sendPingPacket();
-				int time_receive = (int) mcss.receivePing();
+				int time_receive = (int) mcss.recievePing();
 				response.setTime(time_receive);
 				Main.printResponse(server_name, response);
 			} catch (IOException ex) {
