@@ -1,4 +1,4 @@
-package com.github.smk7758.MinecraftServerStatusChecker.Networks;
+package com.github.smk7758.MinecraftServerStatusAPI;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -9,11 +9,8 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.Charset;
-import java.util.List;
 
-import com.google.gson.Gson;
-
-public class MinecraftServerStatus implements AutoCloseable {
+public class StatusConnection implements AutoCloseable {
 	private InetSocketAddress host = null;
 	private int protocol_version = -1;
 	private int timeout = 7000;
@@ -22,13 +19,13 @@ public class MinecraftServerStatus implements AutoCloseable {
 	private OutputStream os = null;
 	private DataInputStream dis = null;
 	private DataOutputStream dos = null;
-	private Gson gson = new Gson();
+	private String response_string = "";
 
 	/**
 	 * @param host the address and the port of the server you want to access.
 	 * @throws IOException some connection error.
 	 */
-	public MinecraftServerStatus(InetSocketAddress host) throws IOException {
+	public StatusConnection(InetSocketAddress host) throws IOException {
 		initialize(host, this.timeout, this.protocol_version);
 	}
 
@@ -38,7 +35,7 @@ public class MinecraftServerStatus implements AutoCloseable {
 	 * @param protocol_version each version of Minecraft has the different one.
 	 * @throws IOException some connection error.
 	 */
-	public MinecraftServerStatus(InetSocketAddress host, int timeout, int protocol_version) throws IOException {
+	public StatusConnection(InetSocketAddress host, int timeout, int protocol_version) throws IOException {
 		this.timeout = timeout;
 		this.protocol_version = protocol_version;
 		initialize(host, timeout, protocol_version);
@@ -50,7 +47,7 @@ public class MinecraftServerStatus implements AutoCloseable {
 	 * @throws IOException some connection error.
 	 * @deprecated Can't get exception properly.
 	 */
-	public MinecraftServerStatus(String address, short port) throws IOException {
+	public StatusConnection(String address, short port) throws IOException {
 		initialize(address, port, this.timeout, this.protocol_version);
 	}
 
@@ -62,7 +59,7 @@ public class MinecraftServerStatus implements AutoCloseable {
 	 * @throws IOException some connection error.
 	 * @deprecated Can't get exception properly.
 	 */
-	public MinecraftServerStatus(String address, short port, int timeout, int protocol_version) throws IOException {
+	public StatusConnection(String address, short port, int timeout, int protocol_version) throws IOException {
 		initialize(address, port, timeout, protocol_version);
 	}
 
@@ -204,38 +201,26 @@ public class MinecraftServerStatus implements AutoCloseable {
 		return ping_time;
 	}
 
-	/**
-	 * gives you the response from the server.
-	 *
-	 * @return the class from JSON.
-	 * @throws IOException some connection error.
-	 */
-	public ServerStatusResponse receiveServerStatus() throws IOException {
-		ServerStatusResponse response = getServerStatusResponse(receiveServerStatusResponseAsString());
-		return response;
-	}
-
-	public ServerStatusResponse getServerStatusResponse(String response_string) {
-		ServerStatusResponse response = gson.fromJson(response_string, ServerStatusResponse.class);
-		return response;
-	}
-
 	public String receiveServerStatusResponseAsString() throws IOException {
 		// Receive Respond
-		int respond_size = readVarInt();
-		if (respond_size == 0) throw new IOException("Invalid size. It's too shrot.");
+		int response_size = readVarInt();
+		if (response_size == 0) throw new IOException("Invalid size. It's too shrot.");
 
 		int packet_id = readVarInt();
 		if (packet_id == -1) throw new IOException("End of stream.");
 		if (packet_id != 0x00) throw new IOException("Invalid PacketID.");
 
-		int respond_string_length = readVarInt();
-		if (respond_string_length == -1) throw new IOException("End of stream.");
-		if (respond_string_length == 0) throw new IOException("Invalid length. It's too short.");
-		byte[] respond_byte = new byte[respond_string_length];
-		dis.readFully(respond_byte);
-		String respond_string = new String(respond_byte);
-		return respond_string;
+		int response_string_length = readVarInt();
+		if (response_string_length == -1) throw new IOException("End of stream.");
+		if (response_string_length == 0) throw new IOException("Invalid length. It's too short.");
+		byte[] response_byte = new byte[response_string_length];
+		dis.readFully(response_byte);
+		this.response_string = new String(response_byte);
+		return this.response_string;
+	}
+
+	public String getReceivedResponse() {
+		return this.response_string;
 	}
 
 	private int readVarInt() throws IOException {
@@ -279,132 +264,5 @@ public class MinecraftServerStatus implements AutoCloseable {
 
 	private void writeByte(byte data, DataOutputStream dos) throws IOException {
 		dos.writeByte(data);
-	}
-
-	/**
-	 * the class from JSON for ServerStatusResponse.
-	 */
-	public class ServerStatusResponse {
-		private Description description;
-		private Players players;
-		private Version version;
-		private String favicon;
-		private int time;
-
-		/**
-		 * @return description.
-		 */
-		public Description getDescription() {
-			return description;
-		}
-
-		/**
-		 * @return Players json block.
-		 */
-		public Players getPlayers() {
-			return players;
-		}
-
-		/**
-		 * @return Version json block.
-		 */
-		public Version getVersion() {
-			return version;
-		}
-
-		/**
-		 * @return Favicon string.
-		 */
-		public String getFavicon() {
-			return favicon;
-		}
-
-		/**
-		 * @return how long did the ping take.
-		 */
-		public int getTime() {
-			return time;
-		}
-
-		public void setTime(int time) {
-			this.time = time;
-		}
-	}
-
-	public class Description {
-		private String text;
-
-		/**
-		 * @return description text(MOTD).
-		 */
-		public String getText() {
-			return text;
-		}
-	}
-
-	/**
-	 * set of players.
-	 */
-	public class Players {
-		private int max;
-		private int online;
-		private List<Player> players;
-
-		/**
-		 * @return maximum of how many player can connect.
-		 */
-		public int getMax() {
-			return max;
-		}
-
-		/**
-		 * @return number of how many players are in the server.
-		 */
-		public int getOnline() {
-			return online;
-		}
-
-		public List<Player> getSample() {
-			return players;
-		}
-	}
-
-	/**
-	 * player data.
-	 */
-	public class Player {
-		private String name;
-		private String id;
-
-		public String getName() {
-			return name;
-		}
-
-		public String getId() {
-			return id;
-		}
-
-	}
-
-	/**
-	 * versions.
-	 */
-	public class Version {
-		private String name;
-		private String protocol;
-
-		/**
-		 * @return server version.
-		 */
-		public String getName() {
-			return name;
-		}
-
-		/**
-		 * @return protocol version.
-		 */
-		public String getProtocol() {
-			return protocol;
-		}
 	}
 }

@@ -3,8 +3,9 @@ package com.github.smk7758.MinecraftServerStatusChecker.Networks;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
+import com.github.smk7758.MinecraftServerStatusAPI.StatusManager;
+import com.github.smk7758.MinecraftServerStatusAPI.StatusResponseSet.ResponseInterface;
 import com.github.smk7758.MinecraftServerStatusChecker.Main;
-import com.github.smk7758.MinecraftServerStatusChecker.Networks.MinecraftServerStatus.ServerStatusResponse;
 import com.github.smk7758.MinecraftServerStatusChecker.Screens.ServerListItemController;
 
 public class ServerListItemConnectThread extends Thread {
@@ -72,8 +73,14 @@ public class ServerListItemConnectThread extends Thread {
 			}
 		}
 		slictr.setImageStatus(1);
-		ResponseServerStatus rss = new ResponseServerStatus(host);
-		ServerStatusResponse response = rss.getResponse();
+		StatusManager msm = new StatusManager(host);
+		ResponseInterface response = msm.receiveResponse();
+		try {
+			Main.outputResponseToLogFile(msm.getReceivedResponse(), server_name, address, port);
+		} catch (IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
 		if (response != null) {
 			slictr.setItems(response);
 			slictr.setImageStatus(2);
@@ -82,34 +89,34 @@ public class ServerListItemConnectThread extends Thread {
 		}
 	}
 
-	private class ResponseServerStatus {
-		private InetSocketAddress host = null;
-
-		public ResponseServerStatus(InetSocketAddress host) {
-			this.host = host;
-		}
-
-		public ServerStatusResponse getResponse() {
-			ServerStatusResponse response = null;
-			try (MinecraftServerStatus mcss = new MinecraftServerStatus(host);) {
-				mcss.sendHandshakePacket();
-				mcss.sendServerStatusPacket();
-				if (Main.debug_mode) {
-					String response_string = mcss.receiveServerStatusResponseAsString();
-					Main.outputResponseToLogFile(response_string, server_name, address, port);
-					response = mcss.getServerStatusResponse(response_string);
-				} else {
-					response = mcss.receiveServerStatus();
-				}
-				mcss.sendPingPacket();
-				int time_receive = (int) mcss.receivePing();
-				response.setTime(time_receive);
-				Main.printResponse(server_name, response);
-			} catch (IOException ex) {
-				ex.printStackTrace();
-				return null;
-			}
-			return response;
-		}
-	}
+//	private class ResponseServerStatus {
+//		private InetSocketAddress host = null;
+//
+//		public ResponseServerStatus(InetSocketAddress host) {
+//			this.host = host;
+//		}
+//
+//		public ServerStatusResponse getResponse() {
+//			ServerStatusResponse response = null;
+//			try (MinecraftServerStatusConnection mcss = new MinecraftServerStatusConnection(host);) {
+//				mcss.sendHandshakePacket();
+//				mcss.sendServerStatusPacket();
+//				if (Main.debug_mode) {
+//					String response_string = mcss.receiveServerStatusResponseAsString();
+//					Main.outputResponseToLogFile(response_string, server_name, address, port);
+//					response = mcss.getServerStatusResponse(response_string);
+//				} else {
+//					response = mcss.receiveServerStatus();
+//				}
+//				mcss.sendPingPacket();
+//				int time_receive = (int) mcss.receivePing();
+//				response.setTime(time_receive);
+//				Main.printResponse(server_name, response);
+//			} catch (IOException ex) {
+//				ex.printStackTrace();
+//				return null;
+//			}
+//			return response;
+//		}
+//	}
 }
