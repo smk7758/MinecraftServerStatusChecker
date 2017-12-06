@@ -73,14 +73,14 @@ public class ServerListItemConnectThread extends Thread {
 			}
 		}
 		slictr.setImageStatus(1);
-		StatusManager msm = new StatusManager(host);
-		ResponseInterface response = msm.receiveResponse();
+		ResponseInterface response = null;
 		try {
-			Main.outputResponseToLogFile(msm.getReceivedResponse(), server_name, address, port);
+			response = StatusManager.receiveResponse(host);
 		} catch (IOException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
+//		Main.outputResponseToLogFile(response_string, server_name, address, port);
 		if (response != null) {
 			slictr.setItems(response);
 			slictr.setImageStatus(2);
@@ -89,34 +89,41 @@ public class ServerListItemConnectThread extends Thread {
 		}
 	}
 
-//	private class ResponseServerStatus {
-//		private InetSocketAddress host = null;
-//
-//		public ResponseServerStatus(InetSocketAddress host) {
-//			this.host = host;
-//		}
-//
-//		public ServerStatusResponse getResponse() {
-//			ServerStatusResponse response = null;
-//			try (MinecraftServerStatusConnection mcss = new MinecraftServerStatusConnection(host);) {
-//				mcss.sendHandshakePacket();
-//				mcss.sendServerStatusPacket();
-//				if (Main.debug_mode) {
-//					String response_string = mcss.receiveServerStatusResponseAsString();
-//					Main.outputResponseToLogFile(response_string, server_name, address, port);
-//					response = mcss.getServerStatusResponse(response_string);
-//				} else {
-//					response = mcss.receiveServerStatus();
-//				}
-//				mcss.sendPingPacket();
-//				int time_receive = (int) mcss.receivePing();
-//				response.setTime(time_receive);
-//				Main.printResponse(server_name, response);
-//			} catch (IOException ex) {
-//				ex.printStackTrace();
-//				return null;
-//			}
-//			return response;
-//		}
-//	}
+	// if (Main.debug_mode) {
+	// String response_string = mcss.receiveServerStatusResponseAsString();
+	// Main.outputResponseToLogFile(response_string, server_name, address, port);
+	// response = mcss.getServerStatusResponse(response_string);
+	// } else {
+	// }
+	//
+	// private class ResponseServerStatus {
+	// private InetSocketAddress host = null;
+	//
+	// public ResponseServerStatus(InetSocketAddress host) {
+	// this.host = host;
+	// }
+	//
+	// public ServerStatusResponse getResponse() {
+	// ServerStatusResponse response = null;
+	// try (MinecraftServerStatusConnection mcss = new MinecraftServerStatusConnection(host);) {
+	// mcss.sendHandshakePacket();
+	// mcss.sendServerStatusPacket();
+	// if (Main.debug_mode) {
+	// String response_string = mcss.receiveServerStatusResponseAsString();
+	// Main.outputResponseToLogFile(response_string, server_name, address, port);
+	// response = mcss.getServerStatusResponse(response_string);
+	// } else {
+	// response = mcss.receiveServerStatus();
+	// }
+	// mcss.sendPingPacket();
+	// int time_receive = (int) mcss.receivePing();
+	// response.setTime(time_receive);
+	// Main.printResponse(server_name, response);
+	// } catch (IOException ex) {
+	// ex.printStackTrace();
+	// return null;
+	// }
+	// return response;
+	// }
+	// }
 }

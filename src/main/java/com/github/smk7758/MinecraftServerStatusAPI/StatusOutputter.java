@@ -7,11 +7,7 @@ import com.github.smk7758.MinecraftServerStatusAPI.StatusResponseSet.ResponseInt
 import com.google.gson.Gson;
 
 public class StatusOutputter {
-	private StatusConnection mssc = null;
-	private Gson gson = new Gson();
-
-	public StatusOutputter(StatusConnection mssc) {
-		this.mssc = mssc;
+	private StatusOutputter() {
 	}
 
 	/**
@@ -20,18 +16,22 @@ public class StatusOutputter {
 	 * @return the class from JSON.
 	 * @throws IOException some connection error.
 	 */
-	public ResponseInterface receiveServerStatus() throws IOException {
-		ResponseInterface response = convertServerStatusResponse(mssc.receiveServerStatusResponseAsString());
+	public static ResponseInterface receiveResponse(StatusConnection status_connection) throws IOException {
+		ResponseInterface response = convertResponse(status_connection.receiveResponseAsString());
 		return response;
 	}
 
 	/**
-	 *
 	 * @param response_string
 	 * @return
 	 */
-	public ResponseInterface convertServerStatusResponse(String response_string) {
-		ResponseInterface response = gson.fromJson(response_string, ResponseForBungeeCord.class);
+	public static ResponseInterface convertResponse(String response_string) {
+		// todo: 判別式Do!
+		ResponseInterface response = new Gson().fromJson(response_string, ResponseForBungeeCord.class);
 		return response;
 	}
+
+	/*
+	 * このクラスは、Json->Java 変換用のユーティリティクラスとする。
+	 */
 }

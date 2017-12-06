@@ -1,58 +1,55 @@
 package com.github.smk7758.MinecraftServerStatusAPI;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 
 import com.github.smk7758.MinecraftServerStatusAPI.StatusResponseSet.ResponseInterface;
 
 public class StatusManager {
-	private InetSocketAddress host = null;
-	public StatusConnection mssc = null;
 
-	public StatusManager(InetSocketAddress host) {
-		this.host = host;
+	private StatusManager() {
 	}
 
-	public ResponseInterface receiveResponse() {
+	public static ResponseInterface receiveResponse(InetSocketAddress host) throws IOException {
 		ResponseInterface response = null;
-		try (StatusConnection mssc = new StatusConnection(host);) {
-			mssc.sendHandshakePacket();
-			mssc.sendServerStatusPacket();
-			// if (Main.debug_mode) {
-			// String response_string = mcss.receiveServerStatusResponseAsString();
-			// Main.outputResponseToLogFile(response_string, server_name, address, port);
-			// response = mcss.getServerStatusResponse(response_string);
-			// } else {
-			StatusOutputter mssro = new StatusOutputter(mssc);
-			response = mssro.receiveServerStatus();
-			// }
-			mssc.sendPingPacket();
-			int time_receive = (int) mssc.receivePing();
+		try (StatusConnection status_connection = new StatusConnection(host);) {
+			status_connection.sendHandshakePacket();
+			status_connection.sendServerStatusPacket();
+			response = StatusOutputter.receiveResponse(status_connection);
+			status_connection.sendPingPacket();
+			int time_receive = (int) status_connection.receivePing();
 			response.setTime(time_receive);
-			// Main.printResponse(server_name, response);
-			this.mssc = mssc;
-		} catch (IOException ex) {
-			ex.printStackTrace();
-			return null;
 		}
 		return response;
 	}
 
-	public String getReceivedResponse() throws IOException {
-		return this.mssc.getReceivedResponse();
+	@Deprecated
+	public static String recieveResponseAsString(StatusConnection status_connection) throws IOException {
+		return status_connection.receiveResponseAsString();
 	}
 
 	public static void printResponse(ResponseInterface response) {
-		// if (debug_mode) {
 		String is_favicon = "true";
-		if (response.getFavicon() == null || response.getFavicon().isEmpty())
-			is_favicon = "false";
+		if (response.getFavicon() == null || response.getFavicon().isEmpty()) is_favicon = "false";
 		String resposes = "Version: " + response.getVersion().getName() + System.lineSeparator()
 				+ "OnlinePlayers / MaximumPlayers: " + response.getPlayers().getOnline() + " / "
 				+ response.getPlayers().getMax() + System.lineSeparator() + "Ping: " + response.getTime()
 				+ System.lineSeparator() + "isFavicon(Icon): " + is_favicon + System.lineSeparator()
 				+ "Description(MOTD): " + response.getDescription().getText();
 		System.out.println(resposes);
-		// }
 	}
+
+	public static InputStream getFaviconAsInputStream(String favicon) {
+		if (favicon == null) throw new NullPointerException("String of favicon must not be null.");
+		else if (favicon.isEmpty()) throw new IllegalArgumentException("String of favicon must not be empty.");
+		favicon = favicon.split(",")[1];
+		byte[] image_byte = javax.xml.bind.DatatypeConverter.parseBase64Binary(favicon);
+		return new ByteArrayInputStream(image_byte);
+	}
+
+	/*
+	 * このクラスは、StatusAPI全体の親的な、または機能的なものとする。また、ユーティリティクラスともする。
+	 */
 }

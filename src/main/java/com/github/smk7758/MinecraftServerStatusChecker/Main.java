@@ -41,8 +41,7 @@ public class Main extends Application {
 	}
 
 	public static void printDebug(String text) {
-		if (debug_mode)
-			System.out.println(text);
+		if (debug_mode) System.out.println(text);
 	}
 
 	public static void printResponse(String server_name, ResponseVanila response) {
@@ -51,7 +50,7 @@ public class Main extends Application {
 	}
 
 	// todo: throwsを修正。
-	public static void outputResponseToLogFile(String response, String server_name, String address, short port) {
+	public static void outputResponseToLogFile(String response_string, String server_name, String address, short port) {
 		String log_file;
 		// if (System.getProperty("user.name").equals("smk7758")) log_file =
 		// "F:\\users\\smk7758\\Desktop\\log_client.txt";
@@ -63,15 +62,15 @@ public class Main extends Application {
 				StandardOpenOption.CREATE, StandardOpenOption.WRITE);) {
 			bw.write("Time: " + LocalDateTime.now().toString() + System.lineSeparator() + "ServerAddress: " + address
 					+ System.lineSeparator() + "ServerPort: " + port + System.lineSeparator());
-			bw.write(response);
+			bw.write(response_string);
 			bw.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		Main.printDebug("OutputLogPath: " + log_file);
 	}
-	//https://codic.jp/engine
-	//https://www.java2blog.com/gson-example-read-and-write-json/
-	//http://logicalerror.seesaa.net/article/294497417.html
-	//http://blog.y-yuki.net/entry/2016/11/25/000000
+	// https://codic.jp/engine
+	// https://www.java2blog.com/gson-example-read-and-write-json/
+	// http://logicalerror.seesaa.net/article/294497417.html
+	// http://blog.y-yuki.net/entry/2016/11/25/000000
 }

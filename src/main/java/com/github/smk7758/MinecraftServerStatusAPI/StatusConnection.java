@@ -19,7 +19,7 @@ public class StatusConnection implements AutoCloseable {
 	private OutputStream os = null;
 	private DataInputStream dis = null;
 	private DataOutputStream dos = null;
-	private String response_string = "";
+	private String response_string = null;
 
 	/**
 	 * @param host the address and the port of the server you want to access.
@@ -131,7 +131,7 @@ public class StatusConnection implements AutoCloseable {
 	 */
 	private byte[] getHandshakePacketData(int state) throws IOException {
 		try (ByteArrayOutputStream output_data = new ByteArrayOutputStream();
-				DataOutputStream output_dos = new DataOutputStream(output_data);) {// just a unit
+			DataOutputStream output_dos = new DataOutputStream(output_data);) {// just a unit
 			output_dos.writeByte(0x00); // PacketID: Handshake
 			writeVarInt(protocol_version, output_dos); // Protocol Version
 			writeString(host.getHostString(), output_dos, Charset.defaultCharset()); // Host Name String
@@ -201,25 +201,23 @@ public class StatusConnection implements AutoCloseable {
 		return ping_time;
 	}
 
-	public String receiveServerStatusResponseAsString() throws IOException {
+	public String receiveResponseAsString() throws IOException {
 		// Receive Respond
-		int response_size = readVarInt();
-		if (response_size == 0) throw new IOException("Invalid size. It's too shrot.");
+		if (response_string == null) {
+			int response_size = readVarInt();
+			if (response_size == 0) throw new IOException("Invalid size. It's too shrot.");
 
-		int packet_id = readVarInt();
-		if (packet_id == -1) throw new IOException("End of stream.");
-		if (packet_id != 0x00) throw new IOException("Invalid PacketID.");
+			int packet_id = readVarInt();
+			if (packet_id == -1) throw new IOException("End of stream.");
+			if (packet_id != 0x00) throw new IOException("Invalid PacketID.");
 
-		int response_string_length = readVarInt();
-		if (response_string_length == -1) throw new IOException("End of stream.");
-		if (response_string_length == 0) throw new IOException("Invalid length. It's too short.");
-		byte[] response_byte = new byte[response_string_length];
-		dis.readFully(response_byte);
-		this.response_string = new String(response_byte);
-		return this.response_string;
-	}
-
-	public String getReceivedResponse() {
+			int response_string_length = readVarInt();
+			if (response_string_length == -1) throw new IOException("End of stream.");
+			if (response_string_length == 0) throw new IOException("Invalid length. It's too short.");
+			byte[] response_byte = new byte[response_string_length];
+			dis.readFully(response_byte);
+			this.response_string = new String(response_byte);
+		}
 		return this.response_string;
 	}
 
@@ -265,4 +263,8 @@ public class StatusConnection implements AutoCloseable {
 	private void writeByte(byte data, DataOutputStream dos) throws IOException {
 		dos.writeByte(data);
 	}
+
+	/*
+	 * このクラスは、自分のフィールド(インスタンス化時のもの)を用いて、通信のみを行う。
+	 */
 }
