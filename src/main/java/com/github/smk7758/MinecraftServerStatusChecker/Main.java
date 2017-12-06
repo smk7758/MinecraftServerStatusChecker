@@ -52,11 +52,9 @@ public class Main extends Application {
 	// todo: throwsを修正。
 	public static void outputResponseToLogFile(String response_string, String server_name, String address, short port) {
 		String log_file;
-		// if (System.getProperty("user.name").equals("smk7758")) log_file =
-		// "F:\\users\\smk7758\\Desktop\\log_client.txt";
-		// else log_file = System.getProperty("user.home") + "\\Desktop\\MSSC_log_file_"
-		// + server_name + ".txt";
-		log_file = "C:\\Users\\kariyassh\\Desktop\\MSSC_log_file_" + server_name + ".txt";
+		if (System.getProperty("user.name").equals("smk7758")) log_file = "F:\\users\\smk7758\\Desktop\\log_client.txt";
+		else log_file = System.getProperty("user.home") + "\\Desktop\\MSSC_log_file_" + server_name + ".txt";
+		// log_file = "C:\\Users\\kariyassh\\Desktop\\MSSC_log_file_" + server_name + ".txt";
 		Path log_file_path = Paths.get(log_file);
 		try (BufferedWriter bw = Files.newBufferedWriter(log_file_path, StandardCharsets.UTF_8,
 				StandardOpenOption.CREATE, StandardOpenOption.WRITE);) {
@@ -69,8 +67,4 @@ public class Main extends Application {
 		}
 		Main.printDebug("OutputLogPath: " + log_file);
 	}
-	// https://codic.jp/engine
-	// https://www.java2blog.com/gson-example-read-and-write-json/
-	// http://logicalerror.seesaa.net/article/294497417.html
-	// http://blog.y-yuki.net/entry/2016/11/25/000000
 }

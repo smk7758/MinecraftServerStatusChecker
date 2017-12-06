@@ -74,13 +74,14 @@ public class ServerListItemConnectThread extends Thread {
 		}
 		slictr.setImageStatus(1);
 		ResponseInterface response = null;
+		StringBuffer response_stringbuffer = new StringBuffer();
 		try {
-			response = StatusManager.receiveResponse(host);
+			response = StatusManager.receiveResponse(host, response_stringbuffer);
 		} catch (IOException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
-//		Main.outputResponseToLogFile(response_string, server_name, address, port);
+		Main.outputResponseToLogFile(response_stringbuffer.toString(), server_name, address, port);
 		if (response != null) {
 			slictr.setItems(response);
 			slictr.setImageStatus(2);

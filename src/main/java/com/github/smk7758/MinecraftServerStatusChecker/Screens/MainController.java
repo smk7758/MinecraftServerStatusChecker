@@ -140,23 +140,23 @@ public class MainController {
 
 	@FXML
 	private void onButtonUpItem() {
-		changeItemIndex(-1);
+		changeItemIndex(1);
 	}
 
 	@FXML
 	private void onButtonDownItem() {
-		changeItemIndex(1);
+		changeItemIndex(-1);
 	}
 
 	// If you want to up, write - 1, to down, write (+) 1.
-	private void changeItemIndex(int number) {
+	private void changeItemIndex(int numbers_goto) {
 		int select_item_index = getSelectServerListItemIndex();
-		if (number == 0) return;
-		else if (number < 0 && select_item_index == 0) return; // 最上部の時。
-		else if (number > 0 && select_item_index == items.size()) return; // 最下部の時。
+		if (numbers_goto == 0) return;
+		else if (numbers_goto > 0 && select_item_index == 0) return; // 最上部の時。
+		else if (numbers_goto < 0 && select_item_index == items.size()) return; // 最下部の時。
 		Pane select_item_temp = items.get(select_item_index);
 		items.remove(select_item_index);
-		items.add(select_item_index + number, select_item_temp);
+		items.add(select_item_index - numbers_goto, select_item_temp);
 		System.out.println("up");
 	}
 
