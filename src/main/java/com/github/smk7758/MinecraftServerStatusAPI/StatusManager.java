@@ -12,14 +12,15 @@ public class StatusManager {
 	private StatusManager() {
 	}
 
-	public static ResponseInterface receiveResponse(InetSocketAddress host, StringBuffer response_stringbuffer) throws IOException {
+	public static ResponseInterface receiveResponse(InetSocketAddress host, StringBuffer response_stringbuffer)
+			throws IOException {
 		ResponseInterface response = null;
 		try (StatusConnection status_connection = new StatusConnection(host);) {
 			status_connection.sendHandshakePacket();
 			status_connection.sendServerStatusPacket();
 			response_stringbuffer.append(status_connection.receiveResponseAsString());
-			response = StatusOutputter.convertResponse(response_stringbuffer.toString());
-//			response = StatusOutputter.receiveResponse(status_connection);
+			// response = StatusOutputter.convertResponse(response_stringbuffer.toString());
+			response = StatusOutputter.receiveResponse(status_connection);
 			status_connection.sendPingPacket();
 			int time_receive = (int) status_connection.receivePing();
 			response.setTime(time_receive);
@@ -40,7 +41,7 @@ public class StatusManager {
 		return response;
 	}
 
-	@Deprecated
+	// 必要性…。
 	public static String recieveResponseAsString(StatusConnection status_connection) throws IOException {
 		return status_connection.receiveResponseAsString();
 	}

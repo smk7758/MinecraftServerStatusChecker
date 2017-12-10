@@ -9,7 +9,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 
-import com.github.smk7758.MinecraftServerStatusAPI.StatusResponseSet.ResponseVanila;
+import com.github.smk7758.MinecraftServerStatusAPI.StatusManager;
+import com.github.smk7758.MinecraftServerStatusAPI.StatusResponseSet.ResponseForVanilla;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -17,7 +18,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-	public static final String program_name = "MinecraftServerStatusChecker_0.0.6";
+	public static final String program_name = "MinecraftServerStatusChecker_0.1.0_snapshot_2017-12-10";
 	public static final String fxml_url = "Screens/Main.fxml";
 	public static Stage primary_stage = null;
 	public static boolean debug_mode = false; // for Debug.
@@ -44,9 +45,9 @@ public class Main extends Application {
 		if (debug_mode) System.out.println(text);
 	}
 
-	public static void printResponse(String server_name, ResponseVanila response) {
+	public static void printResponse(String server_name, ResponseForVanilla response) {
 		System.out.println("ServerName: " + server_name);
-		// printResponse(response);
+		StatusManager.printResponse(response);
 	}
 
 	// todo: throwsを修正。

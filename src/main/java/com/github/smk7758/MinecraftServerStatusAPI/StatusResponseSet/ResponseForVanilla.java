@@ -3,7 +3,7 @@ package com.github.smk7758.MinecraftServerStatusAPI.StatusResponseSet;
 /**
  * the class from JSON for ServerStatusResponse.
  */
-public class ResponseVanila implements ResponseInterface {
+public class ResponseForVanilla implements ResponseInterface {
 	private Description description;
 	private Players players;
 	private Version version;
