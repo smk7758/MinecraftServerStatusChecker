@@ -10,7 +10,7 @@ import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 
 import com.github.smk7758.MinecraftServerStatusAPI.StatusManager;
-import com.github.smk7758.MinecraftServerStatusAPI.StatusResponseSet.ResponseInterface;
+import com.github.smk7758.MinecraftServerStatusAPI.StatusResponseSet.ResponseForVanilla;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -28,7 +28,7 @@ public class Main extends Application {
 	}
 
 	@Override
-	public void start(Stage primary_stage) throws IOException {
+	public void start(Stage primary_stage) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml_url));
 		Scene scene = new Scene(loader.load());
 		// Set Title
@@ -38,7 +38,6 @@ public class Main extends Application {
 		// Set Scene
 		primary_stage.setScene(scene);
 		primary_stage.show();
-
 		Main.primary_stage = primary_stage;
 	}
 
@@ -46,17 +45,12 @@ public class Main extends Application {
 		if (debug_mode) System.out.println(text);
 	}
 
-	// TODO: add timeout, protocol_version.
-	public static void printResponseDebug(ResponseInterface response, String server_name) {
-		if (!debug_mode) return;
+	public static void printResponse(String server_name, ResponseForVanilla response) {
 		System.out.println("ServerName: " + server_name);
-		// System.out.println("Timeout: " + timeout);
 		StatusManager.printResponse(response);
 	}
 
-	// TODO: will be: output window.
-	// TODO: catchを修正。
-	// TODO: add timeout, protocol_version
+	// todo: throwsを修正。
 	public static void outputResponseToLogFile(String response_string, String server_name, String address, short port) {
 		String log_file;
 		if (System.getProperty("user.name").equals("smk7758")) log_file = "F:\\users\\smk7758\\Desktop\\log_client.txt";
@@ -74,7 +68,4 @@ public class Main extends Application {
 		}
 		Main.printDebug("OutputLogPath: " + log_file);
 	}
-
-	// TODO: resize -> change the SLI items size, too.
-	// TODO: Output error to window.
 }

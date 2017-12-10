@@ -12,8 +12,23 @@ public class StatusManager {
 	private StatusManager() {
 	}
 
-	public static ResponseInterface receiveResponse(InetSocketAddress host)
-			throws IOException, StatusResponseFormatException {
+	public static ResponseInterface receiveResponse(InetSocketAddress host, StringBuffer response_stringbuffer)
+			throws IOException {
+		ResponseInterface response = null;
+		try (StatusConnection status_connection = new StatusConnection(host);) {
+			status_connection.sendHandshakePacket();
+			status_connection.sendServerStatusPacket();
+			response_stringbuffer.append(status_connection.receiveResponseAsString());
+			// response = StatusOutputter.convertResponse(response_stringbuffer.toString());
+			response = StatusOutputter.receiveResponse(status_connection);
+			status_connection.sendPingPacket();
+			int time_receive = (int) status_connection.receivePing();
+			response.setTime(time_receive);
+		}
+		return response;
+	}
+
+	public static ResponseInterface receiveResponse(InetSocketAddress host) throws IOException {
 		ResponseInterface response = null;
 		try (StatusConnection status_connection = new StatusConnection(host);) {
 			status_connection.sendHandshakePacket();
@@ -26,10 +41,10 @@ public class StatusManager {
 		return response;
 	}
 
-	// // 必要性…。
-	// public static String recieveResponseAsString(StatusConnection status_connection) throws IOException {
-	// return status_connection.receiveResponseAsString();
-	// }
+	// 必要性…。
+	public static String recieveResponseAsString(StatusConnection status_connection) throws IOException {
+		return status_connection.receiveResponseAsString();
+	}
 
 	public static void printResponse(ResponseInterface response) {
 		String is_favicon = "true";

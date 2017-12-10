@@ -24,6 +24,15 @@ public class ServerListItemController {
 		text_port.setText(port);
 	}
 
+	// public void setClearItems() {
+	// text_description.setText("");
+	// text_players.setText(getPlayersText("", ""));
+	// text_version.setText("");
+	// text_protocol_version.setText("");
+	// text_ping.setText("");
+	// imageview_server_icon.setImage(new Image(""));
+	// }
+
 	public void setImageStatus(int status) {
 		String icon_name = null;
 		switch (status) {
@@ -62,6 +71,7 @@ public class ServerListItemController {
 				new Image(StatusManager.getFaviconAsInputStream(favicon_s)));
 	}
 
+	// もっと効率の良い処理があるはずだ。Stringってこうやっていいのだろうか。
 	private String getPlayersText(String text_online_players_s, String text_max_players_s) {
 		String blank_front = "", blank_back = "";
 		int add_blank_length = text_max_players_s.length() - text_online_players_s.length();
@@ -73,4 +83,23 @@ public class ServerListItemController {
 		}
 		return blank_front + text_online_players_s + " / " + text_max_players_s + blank_back;
 	}
+
+	// private static String getPlayersText(int text_online_players, int
+	// text_max_players) {
+	// String text_online_players_s = String.valueOf(text_online_players);
+	// String text_max_players_s = String.valueOf(text_max_players);
+	// String blank_front = "", blank_back = "";
+	// int add_blank_length = text_max_players_s.length() -
+	// text_online_players_s.length();
+	// if (add_blank_length != 0) {
+	// for (int i = 0; i < add_blank_length; i++) {
+	// if (add_blank_length > 0)
+	// blank_front += " ";
+	// else
+	// blank_back += " ";
+	// }
+	// }
+	// return blank_front + text_online_players_s + " / " + text_max_players_s +
+	// blank_back;
+	// }
 }

@@ -48,9 +48,9 @@ public class StatusOutputter {
 				response = new Gson().fromJson(response_string, ResponseForSpigot_1_8_x.class);
 			}
 		} catch (JsonSyntaxException ex) {
-			throw new StatusResponseFormatException(response_string, "Can't convert string to Response class.");
+			throw new StatusResponseFormatException("Can't convert string to Response class." + System.lineSeparator()
+					+ "The stirng: " + response_string);
 		}
-
 		return response;
 	}
 
@@ -62,57 +62,48 @@ public class StatusOutputter {
 	 * @throws StatusResponseFormatException If the string is invalid.
 	 */
 	public static JsonTypes getJsonTypes(String response_string) throws StatusResponseFormatException {
-		Set<Entry<String, JsonElement>> first_elements;
-		try {
-			first_elements = new Gson().fromJson(response_string, JsonObject.class).entrySet();
-		} catch (JsonSyntaxException ex) {
-			throw new StatusResponseFormatException(response_string, "The string is not JSON.");
-		}
-		boolean has_description = false;
+		JsonObject json_object = new Gson().fromJson(response_string, JsonObject.class);
+		Set<Entry<String, JsonElement>> first_elements = json_object.entrySet();
 		for (Entry<String, JsonElement> first_element : first_elements) {
-			if (first_element.getKey().equals("description")) {
-				has_description = true;
+			if (first_element.getKey().equalsIgnoreCase("description")) {
 				if (first_element.getValue().isJsonObject()) {
 					Set<Entry<String, JsonElement>> second_elements = first_element.getValue()
 							.getAsJsonObject().entrySet();
 					for (Entry<String, JsonElement> second_element : second_elements) {
-						if (second_element.getKey().equals("text")) return JsonTypes.Vanilla;
-						else if (second_element.getKey().equalsIgnoreCase("extra")) {
+						if (second_element.getKey().equalsIgnoreCase("text")) {
+							return JsonTypes.Vanilla;
+						} else if (second_element.getKey().equalsIgnoreCase("extra")) {
 							if (second_element.getValue().isJsonArray()) {
 								JsonArray third_elements = second_element.getValue().getAsJsonArray();
-								if (hasJsonArrayString(third_elements, "text")) return JsonTypes.BungeeCord;
-								throw new StatusResponseFormatException(response_string,
-										"The string has description, and extra, but doesn't have text in extra.");
+								for (JsonElement third_element : third_elements) {
+									if (third_element.getAsJsonObject().has("text")) {
+										return JsonTypes.BungeeCord;
+										// あったら実行される。→ 抜けてしまったらBungeeCord型でない。
+									}
+								}
 							}
+							throw new StatusResponseFormatException(
+									"The string has description, and extra, but doesn't have text in extra."
+											+ System.lineSeparator()
+											+ "The string: " + response_string);
 						}
 					}
 				}
 				return JsonTypes.Spigot_1_8_x;
 			}
 		}
-		if (has_description) throw new StatusResponseFormatException(response_string,
-				"The string doesn't have description.");
-		throw new StatusResponseFormatException(response_string, "The string doesn't have description.");
+		throw new StatusResponseFormatException(
+				"The string doesn't have description." + System.lineSeparator() + "The string: " + response_string);
 	}
 
 	/**
-	 * The type of JSON response string. Vanilla: has description and
+	 * The type of json response string. Vanilla: has description and
 	 */
 	public enum JsonTypes {
 		Vanilla, Spigot_1_8_x, BungeeCord
 	}
 
-	private static boolean hasJsonArrayString(JsonArray elements, String string) {
-		for (JsonElement element : elements) {
-			if (element.getAsJsonObject().has("text")) {
-				return true;
-				// あったら実行される。→ 抜けてしまったらBungeeCord型でない。
-			}
-		}
-		return false;
-	}
-
 	/*
-	 * このクラスは、JSON->Java 変換用のユーティリティクラスとする。
+	 * このクラスは、Json->Java 変換用のユーティリティクラスとする。
 	 */
 }
