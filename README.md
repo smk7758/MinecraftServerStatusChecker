@@ -1,8 +1,11 @@
 MinecraftServerStatusCheckerは、MinecraftサーバーのStatus(状態)/ServerListで表示されるあれを表示するソフトです。
 
+MinecraftServerStatusAPIも付属していますので、APIとしても利用できます。たぶん。
+
 ---How to use---<br>
-1. Launch this programm, and write the address and port you want to see.<br>
-2. Press the "Connect" button.<br>
+1. Launch this programm, and write the fields.
+2. Press the "Add" button and add the server in connect area.<br>
+3. Press the "Connect" button. 
 3. You can see the status of Server!<br>
 <br>
 ---LICENSE---<br>
