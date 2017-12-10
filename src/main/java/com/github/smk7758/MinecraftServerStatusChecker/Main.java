@@ -18,7 +18,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-	public static final String program_name = "MinecraftServerStatusChecker_0.1.0_snapshot_2017-12-10";
+	public static final String program_name = "MinecraftServerStatusChecker_0.1.0";
 	public static final String fxml_url = "Screens/Main.fxml";
 	public static Stage primary_stage = null;
 	public static boolean debug_mode = false; // for Debug.
