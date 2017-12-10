@@ -36,8 +36,6 @@ public class StatusConnection implements AutoCloseable {
 	 * @throws IOException some connection error.
 	 */
 	public StatusConnection(InetSocketAddress host, int timeout, int protocol_version) throws IOException {
-		this.timeout = timeout;
-		this.protocol_version = protocol_version;
 		initialize(host, timeout, protocol_version);
 	}
 
@@ -47,6 +45,7 @@ public class StatusConnection implements AutoCloseable {
 	 * @throws IOException some connection error.
 	 * @deprecated Can't get exception properly.
 	 */
+	@Deprecated
 	public StatusConnection(String address, short port) throws IOException {
 		initialize(address, port, this.timeout, this.protocol_version);
 	}
@@ -59,6 +58,7 @@ public class StatusConnection implements AutoCloseable {
 	 * @throws IOException some connection error.
 	 * @deprecated Can't get exception properly.
 	 */
+	@Deprecated
 	public StatusConnection(String address, short port, int timeout, int protocol_version) throws IOException {
 		initialize(address, port, timeout, protocol_version);
 	}
@@ -71,6 +71,8 @@ public class StatusConnection implements AutoCloseable {
 	 */
 	private void initialize(InetSocketAddress host, int timeout, int protocol_version) throws IOException {
 		this.host = host;
+		this.timeout = timeout;
+		this.protocol_version = protocol_version;
 		socket = new Socket();
 		socket.setSoTimeout(timeout); // Input block millisecond.
 		socket.connect(host, timeout); // connect to host(wait untill timeout when no connect);
@@ -88,6 +90,7 @@ public class StatusConnection implements AutoCloseable {
 	 * @throws IOException some connection error.
 	 * @deprecated Can't get exception properly.
 	 */
+	@Deprecated
 	private void initialize(String address, short port, int timeout, int protocol_version) throws IOException {
 		host = new InetSocketAddress(address, port);
 		initialize(host, timeout, protocol_version);

@@ -8,4 +8,8 @@ public class StatusResponseFormatException extends RuntimeException {
 	public StatusResponseFormatException(String response_string) {
 		super(response_string);
 	}
+
+	public StatusResponseFormatException(String response_string, String reason) {
+		super(reason + System.lineSeparator() + "The stirng: " + response_string);
+	}
 }
