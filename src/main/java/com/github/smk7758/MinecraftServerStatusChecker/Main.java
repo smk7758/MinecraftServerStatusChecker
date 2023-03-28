@@ -55,7 +55,7 @@ public class Main extends Application {
 	}
 
 	// TODO: will be: output window.
-	// TODO: catchを修正。
+	// TODO: catch繧剃ｿｮ豁｣縲�
 	// TODO: add timeout, protocol_version
 	public static void outputResponseToLogFile(String response_string, String server_name, String address, short port) {
 		String log_file;
